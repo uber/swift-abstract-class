@@ -1,0 +1,6 @@
+language: objective-c
+osx_image: xcode10.1
+matrix:
+    include:
+        - name: "AbstractClassFoundationTests"
+          script: xcodebuild test -project AbstractClassFoundation.xcodeproj -scheme AbstractClassFoundationTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
