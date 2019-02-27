@@ -14,4 +14,39 @@
 //  limitations under the License.
 //
 
-print("AbstractClassValidator")
+import Basic
+import Foundation
+import Utility
+
+func main() {
+    let parser = ArgumentParser(usage: "<subcommand> <options>", overview: "Abstract class validator.")
+    let commands = initializeCommands(with: parser)
+    let inputs = Array(CommandLine.arguments.dropFirst())
+    do {
+        let args = try parser.parse(inputs)
+        execute(commands, with: parser, args)
+    } catch {
+        fatalError("Command-line pasing error (use --help for help): \(error)")
+    }
+}
+
+private func initializeCommands(with parser: ArgumentParser) -> [Command] {
+    return [
+        VersionCommand(parser: parser),
+        ValidateCommand(parser: parser)
+    ]
+}
+
+private func execute(_ commands: [Command], with parser: ArgumentParser, _ args: ArgumentParser.Result) {
+    if let subparserName = args.subparser(parser) {
+        for command in commands {
+            if subparserName == command.name {
+                command.execute(with: args)
+            }
+        }
+    } else {
+        parser.printUsage(on: stdoutStream)
+    }
+}
+
+main()
