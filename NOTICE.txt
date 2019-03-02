@@ -1,10 +1,9 @@
-Needle depends on the following libraries:
+Swift Abstract Class depends on the following libraries:
 
 SourceKitten (https://github.com/jpsim/SourceKitten)
 Swift Package Manager (https://github.com/apple/swift-package-manager)
 Swift Concurrency (https://github.com/uber/swift-concurrency)
-RxSwift (https://github.com/ReactiveX/RxSwift)
-SnapKit (https://github.com/SnapKit/SnapKit)
+Swift Common (https://github.com/uber/swift-common)
 
 Copyright (C) 2017 The Guava Authors
 
