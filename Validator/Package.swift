@@ -11,11 +11,13 @@ let package = Package(
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.20.0"),
         .package(url: "https://github.com/apple/swift-package-manager.git", from: "0.1.0"),
         .package(url: "https://github.com/uber/swift-concurrency.git", .upToNextMajor(from: "0.7.1")),
+        .package(url: "https://github.com/uber/swift-common.git", .branch("master")),
     ],
     targets: [
         .target(
             name: "abstractclassvalidator",
             dependencies: [
+                "CommandFramework",
                 "AbstractClassValidatorFramework",
             ]),
         .target(
@@ -24,6 +26,7 @@ let package = Package(
                 "Utility",
                 "SourceKittenFramework",
                 "Concurrency",
+                "SourceParsingFramework",
             ]),
         .testTarget(
             name: "AbstractClassValidatorFrameworkTests",
