@@ -20,13 +20,26 @@ import Foundation
 /// This means the conforming class cannot be directly instantiated,
 /// and it may contain abstract methods that subclasses must provide
 /// implementations for.
-///
-/// - SeeAlso: abstractMethod()
-public protocol AbstractClass: AnyObject {}
+public protocol AbstractClass: AnyObject {
 
-/// Using this definition declares the enclosing method as an abstract
-/// method, where subclasses of the enclosing class must override and
-/// provide a concrete implementation for.
-public func abstractMethod(_ functionName: String = #function) -> Never {
-    fatalError("Abstract method \(functionName) is not implemented.")
+    /// Using this definition declares the enclosing method as an abstract
+    /// method, where subclasses of the enclosing class must override and
+    /// provide a concrete implementation for.
+    ///
+    /// - note: Actual abstract classes that conform to the protocol
+    /// `AbstractClass` should not actually implement this method.
+    /// Instead a default implementation is provided via a protocol
+    /// extension of the `AbstractClass` protocol.
+    func abstractMethod(_ functionName: String) -> Never
+}
+
+/// Extension providing the default implementation of `abstractMethod`.
+public extension AbstractClass {
+
+    /// Using this definition declares the enclosing method as an abstract
+    /// method, where subclasses of the enclosing class must override and
+    /// provide a concrete implementation for.
+    public func abstractMethod(_ functionName: String = #function) -> Never {
+        fatalError("Abstract method \(functionName) is not implemented.")
+    }
 }
