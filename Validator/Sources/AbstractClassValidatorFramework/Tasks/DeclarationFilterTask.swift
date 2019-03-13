@@ -22,7 +22,7 @@ import SourceParsingFramework
 /// content contains any component implementations, dependency protocol
 /// declarations or component instantiations, to determine if the file
 /// should to be processed further.
-class AbstractClassDeclarationFilterTask: BaseFileFilterTask {
+class DeclarationFilterTask: BaseFileFilterTask {
 
     /// Initializer.
     ///
@@ -63,4 +63,3 @@ private class AbstractClassDeclarationFilter: FileFilter {
 
     private let content: String
 }
-

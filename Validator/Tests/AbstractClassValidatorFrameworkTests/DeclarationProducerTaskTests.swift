@@ -17,12 +17,12 @@
 import XCTest
 @testable import AbstractClassValidatorFramework
 
-class AbstractClassDeclarationProducerTaskTests: BaseFrameworkTests {
+class DeclarationProducerTaskTests: BaseFrameworkTests {
 
     func test_execute_noExclusion_abstractClass_verifyResult() {
         let url = fixtureUrl(for: "MixedAbstractClasses.swift")
         let content = try! String(contentsOf: url)
-        let task = AbstractClassDeclarationProducerTask(sourceUrl: url, sourceContent: content)
+        let task = DeclarationProducerTask(sourceUrl: url, sourceContent: content)
 
         let abstractClasses = try! task.execute()
 
@@ -54,7 +54,7 @@ class AbstractClassDeclarationProducerTaskTests: BaseFrameworkTests {
     func test_execute_noExclusion_noAbstractClass_verifyResult() {
         let url = fixtureUrl(for: "NoAbstractClass.swift")
         let content = try! String(contentsOf: url)
-        let task = AbstractClassDeclarationProducerTask(sourceUrl: url, sourceContent: content)
+        let task = DeclarationProducerTask(sourceUrl: url, sourceContent: content)
 
         let abstractClasses = try! task.execute()
 

@@ -21,7 +21,7 @@ import SourceParsingFramework
 
 /// A task that parses a Swift source content and produces abstract class
 /// declaration data models.
-class AbstractClassDeclarationProducerTask: AbstractTask<[AbstractClassDefinition]> {
+class DeclarationProducerTask: AbstractTask<[AbstractClassDefinition]> {
 
     /// Initializer.
     ///
