@@ -43,12 +43,12 @@ class DeclarationFilterTask: BaseFileFilterTask {
     /// - returns: A set of filters to use on the given content.
     override func filters(for content: String) -> [FileFilter] {
         return [
-            AbstractClassDeclarationFilter(content: content),
+            DeclarationFilter(content: content),
         ]
     }
 }
 
-private class AbstractClassDeclarationFilter: FileFilter {
+private class DeclarationFilter: FileFilter {
 
     fileprivate init(content: String) {
         self.content = content
