@@ -19,9 +19,8 @@ import Foundation
 import SourceParsingFramework
 
 /// A task that checks the various aspects of a file, including if its
-/// content contains any component implementations, dependency protocol
-/// declarations or component instantiations, to determine if the file
-/// should to be processed further.
+/// content contains any abstract class delcarations, to determine if
+/// the file should to be processed further.
 class DeclarationFilterTask: BaseFileFilterTask {
 
     /// Initializer.
