@@ -14,8 +14,10 @@
 //  limitations under the License.
 //
 
+import AbstractClassValidatorFramework
 import CommandFramework
 import Foundation
+import SourceParsingFramework
 import Utility
 
 /// The validate command provides the core functionality of Abstract
@@ -60,6 +62,14 @@ class ValidateCommand: AbstractCommand {
             let shouldCollectParsingInfo = arguments.get(self.shouldCollectParsingInfo) ?? false
             let timeout = arguments.get(self.timeout, withDefault: defaultTimeout)
             let concurrencyLimit = arguments.get(self.concurrencyLimit) ?? nil
+
+            do {
+                try Validator().validate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, shouldCollectParsingInfo: shouldCollectParsingInfo, timeout: timeout, concurrencyLimit: concurrencyLimit)
+            } catch GenericError.withMessage(let message) {
+                fatalError(message)
+            } catch {
+                fatalError("Unknown error: \(error)")
+            }
         } else {
             fatalError("Missing source files root directories.")
         }
