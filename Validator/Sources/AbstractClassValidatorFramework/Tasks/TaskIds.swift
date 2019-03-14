@@ -20,4 +20,5 @@ import Foundation
 enum TaskIds: Int {
     case declarationsFilterTask = 1
     case declarationsProducerTask = 2
+    case usageFilterTask = 3
 }
