@@ -17,11 +17,11 @@
 import XCTest
 @testable import AbstractClassValidatorFramework
 
-class AbstractClassDeclarationFilterTaskTests: BaseFrameworkTests {
+class DeclarationFilterTaskTests: BaseFrameworkTests {
 
     func test_execute_noExclusion_noAbstractClass_verifyResult() {
         let url = fixtureUrl(for: "NoAbstractClass.swift")
-        let task = AbstractClassDeclarationFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [])
+        let task = DeclarationFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [])
 
         let result = try! task.execute()
 
@@ -35,7 +35,7 @@ class AbstractClassDeclarationFilterTaskTests: BaseFrameworkTests {
 
     func test_execute_suffixExclusion_hasAbstractClass_verifyResult() {
         let url = fixtureUrl(for: "HasAbstractMethodClass.swift")
-        let task = AbstractClassDeclarationFilterTask(url: url, exclusionSuffixes: ["MethodClass"], exclusionPaths: [])
+        let task = DeclarationFilterTask(url: url, exclusionSuffixes: ["MethodClass"], exclusionPaths: [])
 
         let result = try! task.execute()
 
@@ -49,7 +49,7 @@ class AbstractClassDeclarationFilterTaskTests: BaseFrameworkTests {
 
     func test_execute_pathExclusion_hasAbstractClass_verifyResult() {
         let url = fixtureUrl(for: "HasAbstractMethodClass.swift")
-        let task = AbstractClassDeclarationFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: ["Fixtures/"])
+        let task = DeclarationFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: ["Fixtures/"])
 
         let result = try! task.execute()
 
@@ -63,7 +63,7 @@ class AbstractClassDeclarationFilterTaskTests: BaseFrameworkTests {
 
     func test_execute_noExclusion_hasAbstractMethod_verifyResult() {
         let url = fixtureUrl(for: "HasAbstractMethodClass.swift")
-        let task = AbstractClassDeclarationFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [])
+        let task = DeclarationFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [])
 
         let result = try! task.execute()
 
@@ -78,7 +78,7 @@ class AbstractClassDeclarationFilterTaskTests: BaseFrameworkTests {
 
     func test_execute_noExclusion_hasAbstractVar_verifyResult() {
         let url = fixtureUrl(for: "HasAbstractVarClass.swift")
-        let task = AbstractClassDeclarationFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [])
+        let task = DeclarationFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [])
 
         let result = try! task.execute()
 

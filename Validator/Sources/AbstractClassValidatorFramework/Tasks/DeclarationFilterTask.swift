@@ -19,10 +19,9 @@ import Foundation
 import SourceParsingFramework
 
 /// A task that checks the various aspects of a file, including if its
-/// content contains any component implementations, dependency protocol
-/// declarations or component instantiations, to determine if the file
-/// should to be processed further.
-class AbstractClassDeclarationFilterTask: BaseFileFilterTask {
+/// content contains any abstract class delcarations, to determine if
+/// the file should to be processed further.
+class DeclarationFilterTask: BaseFileFilterTask {
 
     /// Initializer.
     ///
@@ -44,23 +43,22 @@ class AbstractClassDeclarationFilterTask: BaseFileFilterTask {
     /// - returns: A set of filters to use on the given content.
     override func filters(for content: String) -> [FileFilter] {
         return [
-            AbstractClassDeclarationFilter(content: content),
+            DeclarationFilter(content: content),
         ]
     }
 }
 
-private class AbstractClassDeclarationFilter: FileFilter {
+private class DeclarationFilter: FileFilter {
 
     fileprivate init(content: String) {
         self.content = content
     }
 
     fileprivate final func filter() -> Bool {
-        return content.contains("abstractMethod()")
+        return content.contains("\(abstractMethodType)()")
     }
 
     // MARK: - Private
 
     private let content: String
 }
-
