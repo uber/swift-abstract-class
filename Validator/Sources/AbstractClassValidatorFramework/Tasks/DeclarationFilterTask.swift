@@ -55,7 +55,7 @@ private class DeclarationFilter: FileFilter {
     }
 
     fileprivate final func filter() -> Bool {
-        return content.contains("abstractMethod()")
+        return content.contains("\(abstractMethodType)()")
     }
 
     // MARK: - Private

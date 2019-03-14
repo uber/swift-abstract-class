@@ -16,6 +16,9 @@
 
 import Foundation
 
+/// The name of the base abstract method declaration.
+let abstractMethodType = "abstractMethod"
+
 /// A data model representing the definition of an abstract class.
 struct AbstractClassDefinition {
     /// The name of the abstract class.

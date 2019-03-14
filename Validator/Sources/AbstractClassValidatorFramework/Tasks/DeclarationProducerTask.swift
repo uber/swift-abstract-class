@@ -75,7 +75,7 @@ private extension Structure {
             if let subType = sub.type, subType == .varInstance {
                 // If next substructure is an expression call to `abstractMethod`,
                 // then the current substructure is an abstract var.
-                if let nextSub = substructures.first, nextSub.isExpressionCall && nextSub.name == "abstractMethod" {
+                if let nextSub = substructures.first, nextSub.isExpressionCall && nextSub.name == abstractMethodType {
                     _ = substructures.removeFirst()
                     definitions.append(AbstractVarDefinition(name: sub.name, returnType: sub.returnType))
                 }
@@ -94,7 +94,7 @@ private extension Structure {
                 // with the name `abstractMethod`, then this method is an abstract
                 // method.
                 let isAbstract = sub.substructures.contains { (s: Structure) -> Bool in
-                    return s.isExpressionCall && s.name == "abstractMethod"
+                    return s.isExpressionCall && s.name == abstractMethodType
                 }
                 if isAbstract {
                     let parameterTypes = sub.substructures.compactMap { (s: Structure) -> String? in
