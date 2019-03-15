@@ -25,7 +25,7 @@ class UsageFilterTaskTests: BaseFrameworkTests {
         super.setUp()
 
         let abstractVarDefinition = AbstractVarDefinition(name: "abVar", returnType: "Var")
-        abstractClassDefinition = AbstractClassDefinition(name: "SomeAbstractC", abstractVars: [abstractVarDefinition], abstractMethods: [])
+        abstractClassDefinition = AbstractClassDefinition(name: "SomeAbstractC", abstractVars: [abstractVarDefinition], abstractMethods: [], inheritedTypes: [])
     }
 
     func test_execute_noExclusion_noAbstractClass_verifyResult() {
