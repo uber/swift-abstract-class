@@ -46,7 +46,7 @@ class DeclarationProducerTask: AbstractTask<[AbstractClassDefinition]> {
                     let abstractVars = declaration.abstractVars
                     let abstractMethods = declaration.abstractMethods
                     if !abstractVars.isEmpty || !abstractMethods.isEmpty {
-                        return AbstractClassDefinition(name: declaration.name, abstractVars: abstractVars, abstractMethods: abstractMethods)
+                        return AbstractClassDefinition(name: declaration.name, abstractVars: abstractVars, abstractMethods: abstractMethods, inheritedTypes: declaration.inheritedTypes)
                     }
                 }
                 return nil
