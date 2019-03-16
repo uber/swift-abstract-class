@@ -41,16 +41,16 @@ class DeclarationProducerTask: AbstractTask<[AbstractClassDefinition]> {
         let file = File(contents: sourceContent)
         do {
             let structure = try Structure(file: file)
-            return structure.substructures.compactMap { (declaration: Structure) -> AbstractClassDefinition? in
-                if let type = declaration.type, type == .class {
+            return structure
+                .filterSubstructure(by: SwiftDeclarationKind.class.rawValue, recursively: true)
+                .compactMap { (declaration: Structure) -> AbstractClassDefinition? in
                     let abstractVars = declaration.abstractVars
                     let abstractMethods = declaration.abstractMethods
                     if !abstractVars.isEmpty || !abstractMethods.isEmpty {
                         return AbstractClassDefinition(name: declaration.name, abstractVars: abstractVars, abstractMethods: abstractMethods, inheritedTypes: declaration.inheritedTypes)
                     }
+                    return nil
                 }
-                return nil
-            }
         } catch {
             throw GenericError.withMessage("Failed to parse AST for source at \(sourceUrl)")
         }
@@ -60,54 +60,4 @@ class DeclarationProducerTask: AbstractTask<[AbstractClassDefinition]> {
 
     private let sourceUrl: URL
     private let sourceContent: String
-}
-
-private extension Structure {
-
-    var abstractVars: [AbstractVarDefinition] {
-        var definitions = [AbstractVarDefinition]()
-
-        var substructures = self.substructures
-        while !substructures.isEmpty {
-            let sub = substructures.removeFirst()
-            substructures.append(contentsOf: sub.substructures)
-
-            if let subType = sub.type, subType == .varInstance {
-                // If next substructure is an expression call to `abstractMethod`,
-                // then the current substructure is an abstract var.
-                if let nextSub = substructures.first, nextSub.isExpressionCall && nextSub.name == abstractMethodType {
-                    _ = substructures.removeFirst()
-                    definitions.append(AbstractVarDefinition(name: sub.name, returnType: sub.returnType))
-                }
-            }
-        }
-
-        return definitions
-    }
-
-    var abstractMethods: [AbstractMethodDefinition] {
-        var definitions = [AbstractMethodDefinition]()
-
-        for sub in self.substructures {
-            if let subType = sub.type, subType == .functionMethodInstance {
-                // If method structure contains an expression call sub-structure
-                // with the name `abstractMethod`, then this method is an abstract
-                // method.
-                let isAbstract = sub.substructures.contains { (s: Structure) -> Bool in
-                    return s.isExpressionCall && s.name == abstractMethodType
-                }
-                if isAbstract {
-                    let parameterTypes = sub.substructures.compactMap { (s: Structure) -> String? in
-                        if let type = s.type, type == .varParameter {
-                            return s.returnType
-                        }
-                        return nil
-                    }
-                    definitions.append(AbstractMethodDefinition(name: sub.name, returnType: sub.returnType, parameterTypes: parameterTypes))
-                }
-            }
-        }
-
-        return definitions
-    }
 }

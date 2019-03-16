@@ -20,14 +20,14 @@ import XCTest
 class AbstractClassDefinitionsAggregatorTests: BaseFrameworkTests {
 
     func test_aggregate_withAncestors_verifyAggregatedResults() {
-        let grandParentVars = [AbstractVarDefinition(name: "gV", returnType: "GV")]
-        let grandParentMethods = [AbstractMethodDefinition(name: "gM1", returnType: "GM1", parameterTypes: []), AbstractMethodDefinition(name: "gM2", returnType: "GM2", parameterTypes: ["GMP1", "GMP2"])]
+        let grandParentVars = [VarDefinition(name: "gV", returnType: "GV", isAbstract: true)]
+        let grandParentMethods = [MethodDefinition(name: "gM1", returnType: "GM1", parameterTypes: [], isAbstract: true), MethodDefinition(name: "gM2", returnType: "GM2", parameterTypes: ["GMP1", "GMP2"], isAbstract: true)]
 
-        let parentVars = [AbstractVarDefinition(name: "pV1", returnType: "PV1"), AbstractVarDefinition(name: "pV2", returnType: "PV2")]
-        let parentMethods = [AbstractMethodDefinition(name: "gM", returnType: "GM", parameterTypes: [])]
+        let parentVars = [VarDefinition(name: "pV1", returnType: "PV1", isAbstract: true), VarDefinition(name: "pV2", returnType: "PV2", isAbstract: true)]
+        let parentMethods = [MethodDefinition(name: "gM", returnType: "GM", parameterTypes: [], isAbstract: true)]
 
-        let childVars = [AbstractVarDefinition(name: "cV", returnType: "CV")]
-        let childMethods = [AbstractMethodDefinition(name: "cM", returnType: "CM", parameterTypes: ["CMP"])]
+        let childVars = [VarDefinition(name: "cV", returnType: "CV", isAbstract: true)]
+        let childMethods = [MethodDefinition(name: "cM", returnType: "CM", parameterTypes: ["CMP"], isAbstract: true)]
 
         let definitions = [
             AbstractClassDefinition(name: "GrandParent", abstractVars: grandParentVars, abstractMethods: grandParentMethods, inheritedTypes: []),
