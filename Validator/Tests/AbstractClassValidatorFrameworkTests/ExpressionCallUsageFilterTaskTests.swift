@@ -17,7 +17,7 @@
 import XCTest
 @testable import AbstractClassValidatorFramework
 
-class UsageFilterTaskTests: BaseFrameworkTests {
+class ExpressionCallUsageFilterTaskTests: BaseFrameworkTests {
 
     private var abstractClassDefinition: AbstractClassDefinition!
 
@@ -30,7 +30,7 @@ class UsageFilterTaskTests: BaseFrameworkTests {
 
     func test_execute_noExclusion_noAbstractClass_verifyResult() {
         let url = fixtureUrl(for: "NoAbstractClass.swift")
-        let task = UsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [])
+        let task = ExpressionCallUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [])
 
         let result = try! task.execute()
 
@@ -43,8 +43,8 @@ class UsageFilterTaskTests: BaseFrameworkTests {
     }
 
     func test_execute_suffixExclusion_hasAbstractClass_verifyResult() {
-        let url = fixtureUrl(for: "UsageSubclass.swift")
-        let task = UsageFilterTask(url: url, exclusionSuffixes: ["Subclass"], exclusionPaths: [], abstractClassDefinitions: [abstractClassDefinition])
+        let url = fixtureUrl(for: "ViolateInstantiation.swift")
+        let task = ExpressionCallUsageFilterTask(url: url, exclusionSuffixes: ["Instantiation"], exclusionPaths: [], abstractClassDefinitions: [abstractClassDefinition])
 
         let result = try! task.execute()
 
@@ -57,8 +57,8 @@ class UsageFilterTaskTests: BaseFrameworkTests {
     }
 
     func test_execute_pathExclusion_hasAbstractClass_verifyResult() {
-        let url = fixtureUrl(for: "UsageSubclass.swift")
-        let task = UsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: ["Fixtures/"], abstractClassDefinitions: [abstractClassDefinition])
+        let url = fixtureUrl(for: "ViolateInstantiation.swift")
+        let task = ExpressionCallUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: ["Fixtures/"], abstractClassDefinitions: [abstractClassDefinition])
 
         let result = try! task.execute()
 
@@ -71,23 +71,8 @@ class UsageFilterTaskTests: BaseFrameworkTests {
     }
 
     func test_execute_noExclusion_hasAbstractSubclass_verifyResult() {
-        let url = fixtureUrl(for: "UsageSubclass.swift")
-        let task = UsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [abstractClassDefinition])
-
-        let result = try! task.execute()
-
-        switch result {
-        case .shouldProcess(let processUrl, let content):
-            XCTAssertEqual(processUrl, url)
-            XCTAssertEqual(content, try! String(contentsOf: url))
-        case .skip:
-            XCTFail()
-        }
-    }
-
-    func test_execute_noExclusion_hasAbstractType_verifyResult() {
-        let url = fixtureUrl(for: "UsageType.swift")
-        let task = UsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [abstractClassDefinition])
+        let url = fixtureUrl(for: "ViolateInstantiation.swift")
+        let task = ExpressionCallUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [abstractClassDefinition])
 
         let result = try! task.execute()
 
