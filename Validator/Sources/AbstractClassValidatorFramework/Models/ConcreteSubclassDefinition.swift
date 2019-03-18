@@ -16,10 +16,15 @@
 
 import Foundation
 
-/// A list of IDs of task types used in the validator.
-enum TaskIds: Int {
-    case declarationsFilterTask = 1
-    case declarationsProducerTask = 2
-    case usageFilterTask = 3
-    case concreteSubclassProducerTask = 4
+/// A reference based model representing a concrete subclass of an abstract
+/// class. In other words, the leaf node in an abstract class hierarchy.
+struct ConcreteSubclassDefinition {
+    /// The name of the class.
+    let name: String
+    /// The properties, both `var` and `let` of this class.
+    let properties: [VarDefinition]
+    /// The methods of this class.
+    let methods: [MethodDefinition]
+    /// The names of inherited types.
+    let inheritedTypes: [String]
 }
