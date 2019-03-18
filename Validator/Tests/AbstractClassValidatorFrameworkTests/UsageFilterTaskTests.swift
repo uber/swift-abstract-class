@@ -24,7 +24,7 @@ class UsageFilterTaskTests: BaseFrameworkTests {
     override func setUp() {
         super.setUp()
 
-        let abstractVarDefinition = AbstractVarDefinition(name: "abVar", returnType: "Var")
+        let abstractVarDefinition = VarDefinition(name: "abVar", returnType: "Var", isAbstract: true)
         abstractClassDefinition = AbstractClassDefinition(name: "SomeAbstractC", abstractVars: [abstractVarDefinition], abstractMethods: [], inheritedTypes: [])
     }
 

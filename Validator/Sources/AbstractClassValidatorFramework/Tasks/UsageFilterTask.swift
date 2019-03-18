@@ -32,6 +32,8 @@ class UsageFilterTask: BaseFileFilterTask {
     /// - parameter exclusionPaths: The list of path components to check.
     /// If the given URL's path contains any elements in this list, the
     /// URL will be excluded.
+    /// - parameter abstractClassDefinitions: The definitions of all
+    /// abstract classes.
     init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String], abstractClassDefinitions: [AbstractClassDefinition]) {
         self.abstractClassDefinitions = abstractClassDefinitions
         super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, taskId: TaskIds.usageFilterTask.rawValue)
@@ -72,6 +74,9 @@ private class UsageFilter: FileFilter {
         let expression = abstractClassNames.joined(separator: "|")
         let regex = Regex(expression)
         return regex.firstMatch(in: content) != nil
+        // Cannot filter out files that also invokes `abstractMethod`,
+        // since a file might contain an abstract class and a concrete
+        // implementation of an abstract class.
     }
 
     // MARK: - Private

@@ -19,7 +19,7 @@ import XCTest
 
 class DeclarationProducerTaskTests: BaseFrameworkTests {
 
-    func test_execute_noExclusion_abstractClass_verifyResult() {
+    func test_execute_noExclusion_fileWithMixedAbstractClasses_verifyResult() {
         let url = fixtureUrl(for: "MixedAbstractClasses.swift")
         let content = try! String(contentsOf: url)
         let task = DeclarationProducerTask(sourceUrl: url, sourceContent: content)
@@ -59,5 +59,44 @@ class DeclarationProducerTaskTests: BaseFrameworkTests {
         let abstractClasses = try! task.execute()
 
         XCTAssertTrue(abstractClasses.isEmpty)
+    }
+
+    func test_execute_noExclusion_fileWithInnerAbstractClasses_verifyResult() {
+        let url = fixtureUrl(for: "NestedAbstractClasses.swift")
+        let content = try! String(contentsOf: url)
+        let task = DeclarationProducerTask(sourceUrl: url, sourceContent: content)
+
+        let abstractClasses = try! task.execute()
+
+        XCTAssertEqual(abstractClasses[0].name, "OutterAbstractClass")
+        XCTAssertEqual(abstractClasses[0].abstractMethods.count, 1)
+        XCTAssertTrue(abstractClasses[0].abstractMethods[0].isAbstract)
+        XCTAssertEqual(abstractClasses[0].abstractMethods[0].name, "paramMethod(_:b:)")
+        XCTAssertEqual(abstractClasses[0].abstractMethods[0].returnType, "PPP")
+        XCTAssertEqual(abstractClasses[0].abstractMethods[0].parameterTypes.count, 2)
+        XCTAssertEqual(abstractClasses[0].abstractMethods[0].parameterTypes[0], "HJJ")
+        XCTAssertEqual(abstractClasses[0].abstractMethods[0].parameterTypes[1], "Bar")
+        XCTAssertEqual(abstractClasses[0].abstractVars.count, 1)
+        XCTAssertTrue(abstractClasses[0].abstractVars[0].isAbstract)
+        XCTAssertEqual(abstractClasses[0].abstractVars[0].name, "someProperty")
+        XCTAssertEqual(abstractClasses[0].abstractVars[0].returnType, "Int")
+
+        XCTAssertEqual(abstractClasses[1].name, "InnerAbstractClassA")
+        XCTAssertEqual(abstractClasses[1].abstractMethods.count, 1)
+        XCTAssertTrue(abstractClasses[1].abstractMethods[0].isAbstract)
+        XCTAssertEqual(abstractClasses[1].abstractMethods[0].name, "innerAbstractMethodA()")
+        XCTAssertNil(abstractClasses[1].abstractMethods[0].returnType)
+        XCTAssertEqual(abstractClasses[1].abstractVars.count, 0)
+
+        XCTAssertEqual(abstractClasses[2].name, "InnerAbstractClassB")
+        XCTAssertEqual(abstractClasses[2].abstractMethods.count, 1)
+        XCTAssertTrue(abstractClasses[2].abstractMethods[0].isAbstract)
+        XCTAssertEqual(abstractClasses[2].abstractMethods[0].name, "yoMethod()")
+        XCTAssertEqual(abstractClasses[2].abstractMethods[0].parameterTypes.count, 0)
+        XCTAssertEqual(abstractClasses[2].abstractMethods[0].returnType, "Yo")
+        XCTAssertEqual(abstractClasses[2].abstractVars.count, 1)
+        XCTAssertTrue(abstractClasses[2].abstractVars[0].isAbstract)
+        XCTAssertEqual(abstractClasses[2].abstractVars[0].name, "innerAbstractVarB")
+        XCTAssertEqual(abstractClasses[2].abstractVars[0].returnType, "Int")
     }
 }
