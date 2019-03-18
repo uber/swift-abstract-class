@@ -49,28 +49,28 @@ extension Structure {
     /// therefore are abstract methods of this structure. This does
     /// not include recursive structures.
     var abstractMethods: [MethodDefinition] {
-        var definitions = [MethodDefinition]()
-
-        for sub in self.substructures {
-            if let subType = sub.type, subType == .functionMethodInstance {
+        return filterSubstructure(by: SwiftDeclarationKind.functionMethodInstance.rawValue, recursively: false)
+            .compactMap { (methodStructure: Structure) -> MethodDefinition? in
                 // If method structure contains an expression call sub-structure
                 // with the name `abstractMethod`, then this method is an abstract
                 // method.
-                let isAbstract = sub.substructures.contains { (s: Structure) -> Bool in
-                    return s.isExpressionCall && s.name == abstractMethodType
+                let isAbstract = methodStructure.substructures.contains { (substructure: Structure) -> Bool in
+                    return substructure.isExpressionCall && substructure.name == abstractMethodType
                 }
                 if isAbstract {
-                    let parameterTypes = sub.substructures.compactMap { (s: Structure) -> String? in
-                        if let type = s.type, type == .varParameter {
-                            return s.returnType
-                        }
-                        return nil
-                    }
-                    definitions.append(MethodDefinition(name: sub.name, returnType: sub.returnType, parameterTypes: parameterTypes, isAbstract: true))
+                    return MethodDefinition(name: methodStructure.name, returnType: methodStructure.returnType, parameterTypes: methodStructure.parameterTypes, isAbstract: true)
                 }
+                return nil
             }
-        }
+    }
 
-        return definitions
+    /// The parameter types of this method structure.
+    var parameterTypes: [String] {
+        return substructures.compactMap { (structure: Structure) -> String? in
+            if let type = structure.type, type == .varParameter {
+                return structure.returnType
+            }
+            return nil
+        }
     }
 }
