@@ -19,9 +19,9 @@ import Foundation
 import SourceParsingFramework
 
 /// A task that checks the various aspects of a file, including if its
-/// content contains any abstract class usages, to determine if the file
-/// should to be processed further.
-class UsageFilterTask: BaseFileFilterTask {
+/// content contains any direct abstract class constructor invocations,
+/// to determine if the file should to be processed further.
+class ExpressionCallUsageFilterTask: BaseFileFilterTask {
 
     /// Initializer.
     ///
@@ -49,7 +49,7 @@ class UsageFilterTask: BaseFileFilterTask {
             definition.name
         }
         return [
-            UsageFilter(content: content, abstractClassNames: abstractClassNames)
+            ExpressionCallUsageFilter(content: content, abstractClassNames: abstractClassNames)
         ]
     }
 
@@ -58,7 +58,7 @@ class UsageFilterTask: BaseFileFilterTask {
     private let abstractClassDefinitions: [AbstractClassDefinition]
 }
 
-private class UsageFilter: FileFilter {
+private class ExpressionCallUsageFilter: FileFilter {
 
     fileprivate init(content: String, abstractClassNames: [String]) {
         self.content = content
@@ -71,7 +71,11 @@ private class UsageFilter: FileFilter {
             return false
         }
 
-        let expression = abstractClassNames.joined(separator: "|")
+        let expression = abstractClassNames
+            .map { (abstractClassName: String) -> String in
+                "(\(abstractClassName) *(.init)? *(\\(|\\{))"
+            }
+            .joined(separator: "|")
         let regex = Regex(expression)
         return regex.firstMatch(in: content) != nil
         // Cannot filter out files that also invokes `abstractMethod`,
