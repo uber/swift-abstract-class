@@ -25,8 +25,8 @@ class AbstractClassDefinitionsAggregator {
     /// - parameter abstractClassDefinitions: The definitions to
     /// aggregate.
     /// - returns: The aggregated abstract class definitions where
-    /// sub-abstract class definitions include abstract property and
-    /// method definitions of their inherited super-abstract classes.
+    /// sub-abstract class definitions include property and method
+    /// definitions of their inherited super-abstract classes.
     func aggregate(abstractClassDefinitions: [AbstractClassDefinition]) -> [AbstractClassDefinition] {
         // Create a map of name to definition for easy access.
         var definitionsMap = [String: ParentedAbstractClassDefinition]()
@@ -44,14 +44,14 @@ class AbstractClassDefinitionsAggregator {
 
         // Consolidate each definition with its ancestor definitions.
         return Array(definitionsMap.values).map { (definition: ParentedAbstractClassDefinition) -> AbstractClassDefinition in
-            var allAbstractVars = definition.value.abstractVars
-            var allAbstractMethods = definition.value.abstractMethods
+            var allVars = definition.value.vars
+            var allMethods = definition.value.methods
             iterateAllAncestors(of: definition) { (ancestor: ParentedAbstractClassDefinition) in
-                allAbstractVars.append(contentsOf: ancestor.value.abstractVars)
-                allAbstractMethods.append(contentsOf: ancestor.value.abstractMethods)
+                allVars.append(contentsOf: ancestor.value.vars)
+                allMethods.append(contentsOf: ancestor.value.methods)
             }
 
-            return AbstractClassDefinition(name: definition.value.name, abstractVars: allAbstractVars, abstractMethods: allAbstractMethods, inheritedTypes: definition.value.inheritedTypes)
+            return AbstractClassDefinition(name: definition.value.name, vars: allVars, methods: allMethods, inheritedTypes: definition.value.inheritedTypes)
         }
     }
 

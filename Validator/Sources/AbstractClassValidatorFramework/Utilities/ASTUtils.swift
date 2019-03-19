@@ -21,10 +21,9 @@ import SourceKittenFramework
 /// of common abstract class AST properties.
 extension Structure {
 
-    /// All the instance properties that invoke `abstractMethod`,
-    /// therefore are abstract properties of this structure. This does
-    /// not include recursive structures.
-    var abstractVars: [VarDefinition] {
+    /// All the instance properties of this structure. This does not include
+    /// recursive structures.
+    var vars: [VarDefinition] {
         var definitions = [VarDefinition]()
 
         var substructures = self.substructures
@@ -34,34 +33,37 @@ extension Structure {
             if let subType = sub.type, subType == .varInstance {
                 // If next substructure is an expression call to `abstractMethod`,
                 // then the current substructure is an abstract var.
+                let isAbstract: Bool
                 if let nextSub = substructures.first, nextSub.isExpressionCall && nextSub.name == abstractMethodType {
+                    isAbstract = true
+                    // Remove the next substructure since it is the expression
+                    // call to `abstractMethod`.
                     _ = substructures.removeFirst()
-                    // Properties must have return types.
-                    definitions.append(VarDefinition(name: sub.name, returnType: sub.returnType!, isAbstract: true))
+                } else {
+                    isAbstract = false
                 }
+
+                // Properties must have return types.
+                definitions.append(VarDefinition(name: sub.name, returnType: sub.returnType!, isAbstract: isAbstract))
             }
         }
 
         return definitions
     }
 
-    /// All the instance methods that invoke `abstractMethod`,
-    /// therefore are abstract methods of this structure. This does
-    /// not include recursive structures.
-    var abstractMethods: [MethodDefinition] {
+    /// All the instance methods of this structure. This does not
+    /// include recursive structures.
+    var methods: [MethodDefinition] {
         return filterSubstructure(by: SwiftDeclarationKind.functionMethodInstance.rawValue, recursively: false)
-            .compactMap { (methodStructure: Structure) -> MethodDefinition? in
+            .map { (methodStructure: Structure) -> MethodDefinition in
                 // If method structure contains an expression call sub-structure
                 // with the name `abstractMethod`, then this method is an abstract
                 // method.
                 let isAbstract = methodStructure.substructures.contains { (substructure: Structure) -> Bool in
                     return substructure.isExpressionCall && substructure.name == abstractMethodType
                 }
-                if isAbstract {
-                    return MethodDefinition(name: methodStructure.name, returnType: methodStructure.returnType, parameterTypes: methodStructure.parameterTypes, isAbstract: true)
-                }
-                return nil
-            }
+                return MethodDefinition(name: methodStructure.name, returnType: methodStructure.returnType, parameterTypes: methodStructure.parameterTypes, isAbstract: isAbstract)
+        }
     }
 
     /// The parameter types of this method structure.

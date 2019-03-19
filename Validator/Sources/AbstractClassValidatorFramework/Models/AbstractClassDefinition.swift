@@ -23,10 +23,10 @@ let abstractMethodType = "abstractMethod"
 struct AbstractClassDefinition: Equatable {
     /// The name of the abstract class.
     let name: String
-    /// The abstract vars.
-    let abstractVars: [VarDefinition]
-    /// The abstract methods.
-    let abstractMethods: [MethodDefinition]
+    /// The vars definitions.
+    let vars: [VarDefinition]
+    /// The method definitions.
+    let methods: [MethodDefinition]
     /// The names of inherited types.
     let inheritedTypes: [String]
 }
