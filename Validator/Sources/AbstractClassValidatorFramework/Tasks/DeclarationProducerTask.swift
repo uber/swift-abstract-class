@@ -33,9 +33,9 @@ class DeclarationProducerTask: AbstractTask<[AbstractClassDefinition]> {
         super.init(id: TaskIds.declarationsProducerTask.rawValue)
     }
 
-    /// Execute the task and return the AST structure data model.
+    /// Execute the task and return the abstract class data models.
     ///
-    /// - returns: The `AST` data model.
+    /// - returns: The abstract class data models.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> [AbstractClassDefinition] {
         let file = File(contents: sourceContent)

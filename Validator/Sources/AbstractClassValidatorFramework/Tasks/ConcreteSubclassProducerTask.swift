@@ -36,9 +36,9 @@ class ConcreteSubclassProducerTask: AbstractTask<[ConcreteSubclassDefinition]> {
         super.init(id: TaskIds.concreteSubclassProducerTask.rawValue)
     }
 
-    /// Execute the task and return the AST structure data model.
+    /// Execute the task and return the concrete subclass data models.
     ///
-    /// - returns: The `AST` data model.
+    /// - returns: The concrete subclass data models.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> [ConcreteSubclassDefinition] {
         guard !abstractClassDefinitions.isEmpty else {

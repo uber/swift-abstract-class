@@ -14,27 +14,34 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import Foundation
 import SourceKittenFramework
 import SourceParsingFramework
 
-/// Checks the rule that abstract classes cannot be directly instantiated.
-class ExpressionCallChecker: AbstractClassChecker {
+/// A task that validates a file containing expression call abstract
+/// class usages to ensure abstract class types are not directly
+/// instantiated.
+class ExpressionCallValidatorTask: AbstractTask<Void> {
 
     /// Initializer.
     ///
-    /// - parameter abstractClassDefinitions: The definitions of abstract
-    /// classes to check for.
-    init(abstractClassDefinitions: [AbstractClassDefinition]) {
+    /// - parameter sourceUrl: The source URL.
+    /// - parameter sourceContent: The source content to be parsed into AST.
+    /// - parameter abstractClassDefinitions: The definitions of all
+    /// abstract classes.
+    init(sourceUrl: URL, sourceContent: String, abstractClassDefinitions: [AbstractClassDefinition]) {
+        self.sourceUrl = sourceUrl
+        self.sourceContent = sourceContent
         self.abstractClassDefinitions = abstractClassDefinitions
+        super.init(id: TaskIds.expressionCallValidatorTask.rawValue)
     }
 
-    /// Check the given AST structure for any abstract rule violations.
+    /// Execute the task and validate the given file's expression call
+    /// usages.
     ///
-    /// - parameter structure: The AST structure to check.
-    /// - parameter sourceUrl: The URL where the structure is parsed from.
-    /// - throws: If any violations of the rule is found.
-    func check(structure: Structure, fromSourceUrl sourceUrl: URL) throws {
+    /// - throws: Any error occurred during execution.
+    override func execute() throws {
         guard !abstractClassDefinitions.isEmpty else {
             return
         }
@@ -42,6 +49,11 @@ class ExpressionCallChecker: AbstractClassChecker {
         let abstractClassNames = Set<String>(abstractClassDefinitions.map { (definition: AbstractClassDefinition) -> String in
             definition.name
         })
+
+        let file = File(contents: sourceContent)
+        guard let structure = try? Structure(file: file) else {
+            throw GenericError.withMessage("Failed to parse AST for source at \(sourceUrl)")
+        }
 
         // Remove explicit `init` annotations.
         let expressionCallTypes = structure.uniqueExpressionCallNames.compactMap { (call: String) -> String? in
@@ -61,5 +73,7 @@ class ExpressionCallChecker: AbstractClassChecker {
 
     // MARK: - Private
 
+    private let sourceUrl: URL
+    private let sourceContent: String
     private let abstractClassDefinitions: [AbstractClassDefinition]
 }
