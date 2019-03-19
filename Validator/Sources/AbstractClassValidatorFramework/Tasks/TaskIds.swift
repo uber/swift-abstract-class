@@ -22,4 +22,5 @@ enum TaskIds: Int {
     case declarationsProducerTask = 2
     case usageFilterTask = 3
     case concreteSubclassProducerTask = 4
+    case expressionCallValidatorTask = 5
 }

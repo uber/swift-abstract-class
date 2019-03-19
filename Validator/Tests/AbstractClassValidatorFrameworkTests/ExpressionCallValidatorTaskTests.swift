@@ -19,7 +19,7 @@ import SourceParsingFramework
 import XCTest
 @testable import AbstractClassValidatorFramework
 
-class ExpressionCallCheckerTests: BaseFrameworkTests {
+class ExpressionCallValidatorTaskTests: BaseFrameworkTests {
 
     private var abstractClassDefinition: AbstractClassDefinition!
 
@@ -32,12 +32,11 @@ class ExpressionCallCheckerTests: BaseFrameworkTests {
 
     func test_check_noUsage_verifyResult() {
         let url = fixtureUrl(for: "NoAbstractClass.swift")
-        let file = File(contents: try! String(contentsOf: url))
-        let structure = try! Structure(file: file)
+        let content = try! String(contentsOf: url)
+        let task = ExpressionCallValidatorTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
-        let checker = ExpressionCallChecker(abstractClassDefinitions: [abstractClassDefinition])
         do {
-            try checker.check(structure: structure, fromSourceUrl: url)
+            try task.execute()
         } catch {
             XCTFail()
         }
@@ -45,12 +44,11 @@ class ExpressionCallCheckerTests: BaseFrameworkTests {
 
     func test_check_hasSubclassUsage_noViolations() {
         let url = fixtureUrl(for: "UsageSubclass.swift")
-        let file = File(contents: try! String(contentsOf: url))
-        let structure = try! Structure(file: file)
+        let content = try! String(contentsOf: url)
+        let task = ExpressionCallValidatorTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
-        let checker = ExpressionCallChecker(abstractClassDefinitions: [abstractClassDefinition])
         do {
-            try checker.check(structure: structure, fromSourceUrl: url)
+            try task.execute()
         } catch {
             XCTFail()
         }
@@ -58,12 +56,11 @@ class ExpressionCallCheckerTests: BaseFrameworkTests {
 
     func test_check_hasTypeUsage_noViolations() {
         let url = fixtureUrl(for: "UsageType.swift")
-        let file = File(contents: try! String(contentsOf: url))
-        let structure = try! Structure(file: file)
+        let content = try! String(contentsOf: url)
+        let task = ExpressionCallValidatorTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
-        let checker = ExpressionCallChecker(abstractClassDefinitions: [abstractClassDefinition])
         do {
-            try checker.check(structure: structure, fromSourceUrl: url)
+            try task.execute()
         } catch {
             XCTFail()
         }
@@ -71,12 +68,11 @@ class ExpressionCallCheckerTests: BaseFrameworkTests {
 
     func test_check_hasIViolations() {
         let url = fixtureUrl(for: "ViolateInstantiation.swift")
-        let file = File(contents: try! String(contentsOf: url))
-        let structure = try! Structure(file: file)
+        let content = try! String(contentsOf: url)
+        let task = ExpressionCallValidatorTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
-        let checker = ExpressionCallChecker(abstractClassDefinitions: [abstractClassDefinition])
         do {
-            try checker.check(structure: structure, fromSourceUrl: url)
+            try task.execute()
             XCTFail()
         } catch GenericError.withMessage(let message) {
             XCTAssertTrue(message.contains(abstractClassDefinition.name))
