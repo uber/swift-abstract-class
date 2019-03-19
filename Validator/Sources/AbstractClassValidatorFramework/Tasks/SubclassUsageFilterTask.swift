@@ -19,9 +19,9 @@ import Foundation
 import SourceParsingFramework
 
 /// A task that checks the various aspects of a file, including if its
-/// content contains any direct abstract class constructor invocations,
-/// to determine if the file should to be processed further.
-class ExpressionCallUsageFilterTask: BaseRegexUsageFilterTask {
+/// content contains any subclasses of abstract classes, to determine if
+/// the file should to be processed further.
+class SubclassUsageFilterTask: BaseRegexUsageFilterTask {
 
     /// Initializer.
     ///
@@ -35,11 +35,11 @@ class ExpressionCallUsageFilterTask: BaseRegexUsageFilterTask {
     /// - parameter abstractClassDefinitions: The definitions of all
     /// abstract classes.
     init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String], abstractClassDefinitions: [AbstractClassDefinition]) {
-        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, abstractClassDefinitions: abstractClassDefinitions, taskId: .expressionCallUsageFilterTask) { (abstractClassDefinition: AbstractClassDefinition) in
-            "(\(abstractClassDefinition.name) *(.init)? *(\\(|\\{))"
-            // Cannot filter out files that also invokes `abstractMethod`,
-            // since a file might contain an abstract class and a concrete
-            // implementation of an abstract class.
+        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, abstractClassDefinitions: abstractClassDefinitions, taskId: .subclassUsageFilterTask) { (abstractClassDefinition: AbstractClassDefinition) in
+            "(: *\(abstractClassDefinition.name) *(\\(|\\{))"
+            // Cannot filter out files that also contain known abstract
+            // classes, since a file might contain an abstract class and
+            // a concrete implementation of an abstract class.
         }
     }
 }
