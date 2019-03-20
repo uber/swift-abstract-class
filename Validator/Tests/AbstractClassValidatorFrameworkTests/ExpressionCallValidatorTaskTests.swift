@@ -27,7 +27,7 @@ class ExpressionCallValidatorTaskTests: BaseFrameworkTests {
         super.setUp()
 
         let abstractVarDefinition = VarDefinition(name: "abVar", returnType: "Var", isAbstract: true)
-        abstractClassDefinition = AbstractClassDefinition(name: "SomeAbstractC", abstractVars: [abstractVarDefinition], abstractMethods: [], inheritedTypes: [])
+        abstractClassDefinition = AbstractClassDefinition(name: "SomeAbstractC", vars: [abstractVarDefinition], methods: [], inheritedTypes: [])
     }
 
     func test_check_noUsage_verifyResult() {

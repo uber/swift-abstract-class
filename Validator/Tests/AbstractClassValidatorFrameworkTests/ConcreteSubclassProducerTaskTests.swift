@@ -22,7 +22,7 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
     func test_execute_hasAbstractSubclass_verifyNoDefinitions() {
         let url = fixtureUrl(for: "MiddleAbstractClass.swift")
         let content = try! String(contentsOf: url)
-        let abstractClassDefinitions = [AbstractClassDefinition(name: "GrandParentAbstractClass", abstractVars: [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: true)], abstractMethods: [], inheritedTypes: ["AbstractClass"])]
+        let abstractClassDefinitions = [AbstractClassDefinition(name: "GrandParentAbstractClass", vars: [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: true)], methods: [], inheritedTypes: ["AbstractClass"])]
 
         let task = ConcreteSubclassProducerTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: abstractClassDefinitions)
 
@@ -35,8 +35,8 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
         let url = fixtureUrl(for: "ConcreteSubclass.swift")
         let content = try! String(contentsOf: url)
         let abstractClassDefinitions = [
-            AbstractClassDefinition(name: "GrandParentAbstractClass", abstractVars: [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: true)], abstractMethods: [], inheritedTypes: ["AbstractClass"]),
-            AbstractClassDefinition(name: "ParentAbstractClass", abstractVars: [], abstractMethods: [MethodDefinition(name: "parentMethod(index:)", returnType: "String", parameterTypes: ["Int"], isAbstract: true)], inheritedTypes: ["GrandParentAbstractClass"])
+            AbstractClassDefinition(name: "GrandParentAbstractClass", vars: [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: true)], methods: [], inheritedTypes: ["AbstractClass"]),
+            AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [MethodDefinition(name: "parentMethod(index:)", returnType: "String", parameterTypes: ["Int"], isAbstract: true)], inheritedTypes: ["GrandParentAbstractClass"])
         ]
 
         let task = ConcreteSubclassProducerTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: abstractClassDefinitions)
@@ -60,8 +60,8 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
         let url = fixtureUrl(for: "InnerConcreteSubclass.swift")
         let content = try! String(contentsOf: url)
         let abstractClassDefinitions = [
-            AbstractClassDefinition(name: "GrandParentAbstractClass", abstractVars: [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: true)], abstractMethods: [], inheritedTypes: ["AbstractClass"]),
-            AbstractClassDefinition(name: "ParentAbstractClass", abstractVars: [], abstractMethods: [MethodDefinition(name: "parentMethod(index:)", returnType: "String", parameterTypes: ["Int"], isAbstract: true)], inheritedTypes: ["GrandParentAbstractClass"])
+            AbstractClassDefinition(name: "GrandParentAbstractClass", vars: [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: true)], methods: [], inheritedTypes: ["AbstractClass"]),
+            AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [MethodDefinition(name: "parentMethod(index:)", returnType: "String", parameterTypes: ["Int"], isAbstract: true)], inheritedTypes: ["GrandParentAbstractClass"])
         ]
 
         let task = ConcreteSubclassProducerTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: abstractClassDefinitions)

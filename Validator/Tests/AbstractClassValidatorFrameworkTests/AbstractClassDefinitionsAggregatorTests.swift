@@ -30,9 +30,9 @@ class AbstractClassDefinitionsAggregatorTests: BaseFrameworkTests {
         let childMethods = [MethodDefinition(name: "cM", returnType: "CM", parameterTypes: ["CMP"], isAbstract: true)]
 
         let definitions = [
-            AbstractClassDefinition(name: "GrandParent", abstractVars: grandParentVars, abstractMethods: grandParentMethods, inheritedTypes: []),
-            AbstractClassDefinition(name: "Parent", abstractVars: parentVars, abstractMethods: parentMethods, inheritedTypes: ["GrandParent"]),
-            AbstractClassDefinition(name: "Child", abstractVars: childVars, abstractMethods: childMethods, inheritedTypes: ["Parent"]),
+            AbstractClassDefinition(name: "GrandParent", vars: grandParentVars, methods: grandParentMethods, inheritedTypes: []),
+            AbstractClassDefinition(name: "Parent", vars: parentVars, methods: parentMethods, inheritedTypes: ["GrandParent"]),
+            AbstractClassDefinition(name: "Child", vars: childVars, methods: childMethods, inheritedTypes: ["Parent"]),
         ]
 
         let aggregator = AbstractClassDefinitionsAggregator()
@@ -44,27 +44,27 @@ class AbstractClassDefinitionsAggregatorTests: BaseFrameworkTests {
             case "Child":
                 let allVars = grandParentVars + parentVars + childVars
                 for v in allVars {
-                    XCTAssertTrue(definition.abstractVars.contains(v))
+                    XCTAssertTrue(definition.vars.contains(v))
                 }
                 let allMethods = grandParentMethods + parentMethods + childMethods
                 for m in allMethods {
-                    XCTAssertTrue(definition.abstractMethods.contains(m))
+                    XCTAssertTrue(definition.methods.contains(m))
                 }
             case "Parent":
                 let allVars = grandParentVars + parentVars
                 for v in allVars {
-                    XCTAssertTrue(definition.abstractVars.contains(v))
+                    XCTAssertTrue(definition.vars.contains(v))
                 }
                 let allMethods = grandParentMethods + parentMethods
                 for m in allMethods {
-                    XCTAssertTrue(definition.abstractMethods.contains(m))
+                    XCTAssertTrue(definition.methods.contains(m))
                 }
             case "GrandParent":
                 for v in grandParentVars {
-                    XCTAssertTrue(definition.abstractVars.contains(v))
+                    XCTAssertTrue(definition.vars.contains(v))
                 }
                 for m in grandParentMethods {
-                    XCTAssertTrue(definition.abstractMethods.contains(m))
+                    XCTAssertTrue(definition.methods.contains(m))
                 }
             default:
                 XCTFail()
