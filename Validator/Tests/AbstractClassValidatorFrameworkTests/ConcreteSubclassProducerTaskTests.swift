@@ -46,13 +46,13 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
         XCTAssertEqual(concreteDefinitions.count, 2)
 
         XCTAssertEqual(concreteDefinitions[0].name, "ConcreteClass1")
-        XCTAssertEqual(concreteDefinitions[0].properties, [VarDefinition(name: "someProperty", returnType: "SomeAbstractC", isAbstract: false),
+        XCTAssertEqual(concreteDefinitions[0].vars, [VarDefinition(name: "someProperty", returnType: "SomeAbstractC", isAbstract: false),
                                                            VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: false)])
         XCTAssertEqual(concreteDefinitions[0].methods, [MethodDefinition(name: "parentMethod(index:)", returnType: "String", parameterTypes: ["Int"], isAbstract: false)])
         XCTAssertEqual(concreteDefinitions[0].inheritedTypes, ["ParentAbstractClass", "AProtocol"])
 
         XCTAssertEqual(concreteDefinitions[1].name, "ConcreteClass2")
-        XCTAssertEqual(concreteDefinitions[1].properties, [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: false)])
+        XCTAssertEqual(concreteDefinitions[1].vars, [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: false)])
         XCTAssertEqual(concreteDefinitions[1].inheritedTypes, ["GrandParentAbstractClass"])
     }
 
@@ -71,7 +71,7 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
         XCTAssertEqual(concreteDefinitions.count, 1)
 
         XCTAssertEqual(concreteDefinitions[0].name, "ConcreteClass2")
-        XCTAssertEqual(concreteDefinitions[0].properties, [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: false)])
+        XCTAssertEqual(concreteDefinitions[0].vars, [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: false)])
         XCTAssertEqual(concreteDefinitions[0].inheritedTypes, ["GrandParentAbstractClass"])
     }
 }

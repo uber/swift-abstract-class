@@ -68,7 +68,7 @@ class ConcreteSubclassProducerTask: AbstractTask<[ConcreteSubclassDefinition]> {
                         guard !hasAbstractMethods else {
                             return nil
                         }
-                        return ConcreteSubclassDefinition(name: classStructure.name, properties: classStructure.varDefinitions, methods: classStructure.methodDefinitions, inheritedTypes: inheritedTypes)
+                        return ConcreteSubclassDefinition(name: classStructure.name, vars: classStructure.varDefinitions, methods: classStructure.methodDefinitions, inheritedTypes: inheritedTypes)
                     }
                     return nil
                 }

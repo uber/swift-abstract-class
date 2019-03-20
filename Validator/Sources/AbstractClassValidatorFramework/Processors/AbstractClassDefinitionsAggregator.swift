@@ -27,7 +27,7 @@ class AbstractClassDefinitionsAggregator {
     /// - returns: The aggregated abstract class definitions where
     /// sub-abstract class definitions include property and method
     /// definitions of their inherited super-abstract classes.
-    func aggregate(abstractClassDefinitions: [AbstractClassDefinition]) -> [AbstractClassDefinition] {
+    func aggregate(abstractClassDefinitions: [AbstractClassDefinition]) -> [AggregatedAbstractClassDefinition] {
         // Create a map of name to definition for easy access.
         var definitionsMap = [String: ParentedAbstractClassDefinition]()
         for definition in abstractClassDefinitions {
@@ -43,15 +43,19 @@ class AbstractClassDefinitionsAggregator {
         }
 
         // Consolidate each definition with its ancestor definitions.
-        return Array(definitionsMap.values).map { (definition: ParentedAbstractClassDefinition) -> AbstractClassDefinition in
-            var allVars = definition.value.vars
-            var allMethods = definition.value.methods
+        return Array(definitionsMap.values).map { (definition: ParentedAbstractClassDefinition) -> AggregatedAbstractClassDefinition in
+            var allVars = Set<VarDefinition>(definition.value.vars)
+            var allMethods = Set<MethodDefinition>(definition.value.methods)
             iterateAllAncestors(of: definition) { (ancestor: ParentedAbstractClassDefinition) in
-                allVars.append(contentsOf: ancestor.value.vars)
-                allMethods.append(contentsOf: ancestor.value.methods)
+                for varDefinition in ancestor.value.vars {
+                    allVars.insert(varDefinition)
+                }
+                for methodDefinition in ancestor.value.methods {
+                    allMethods.insert(methodDefinition)
+                }
             }
 
-            return AbstractClassDefinition(name: definition.value.name, vars: allVars, methods: allMethods, inheritedTypes: definition.value.inheritedTypes)
+            return AggregatedAbstractClassDefinition(value: definition.value, aggregatedVars: Array(allVars), aggregatedMethods: Array(allMethods))
         }
     }
 
@@ -71,7 +75,7 @@ private class ParentedAbstractClassDefinition {
     fileprivate let value: AbstractClassDefinition
     fileprivate var ancestors = [ParentedAbstractClassDefinition]()
 
-    init(value: AbstractClassDefinition) {
+    fileprivate init(value: AbstractClassDefinition) {
         self.value = value
     }
 }
