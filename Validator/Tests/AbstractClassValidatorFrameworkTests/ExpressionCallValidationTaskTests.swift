@@ -19,7 +19,7 @@ import SourceParsingFramework
 import XCTest
 @testable import AbstractClassValidatorFramework
 
-class ExpressionCallValidatorTaskTests: BaseFrameworkTests {
+class ExpressionCallValidationTaskTests: BaseFrameworkTests {
 
     private var abstractClassDefinition: AbstractClassDefinition!
 
@@ -30,10 +30,10 @@ class ExpressionCallValidatorTaskTests: BaseFrameworkTests {
         abstractClassDefinition = AbstractClassDefinition(name: "SomeAbstractC", vars: [abstractVarDefinition], methods: [], inheritedTypes: [])
     }
 
-    func test_check_noUsage_verifyResult() {
+    func test_execute_noUsage_verifyResult() {
         let url = fixtureUrl(for: "NoAbstractClass.swift")
         let content = try! String(contentsOf: url)
-        let task = ExpressionCallValidatorTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
+        let task = ExpressionCallValidationTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
         do {
             try task.execute()
@@ -42,10 +42,10 @@ class ExpressionCallValidatorTaskTests: BaseFrameworkTests {
         }
     }
 
-    func test_check_hasSubclassUsage_noViolations() {
+    func test_execute_hasSubclassUsage_noViolations() {
         let url = fixtureUrl(for: "UsageSubclass.swift")
         let content = try! String(contentsOf: url)
-        let task = ExpressionCallValidatorTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
+        let task = ExpressionCallValidationTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
         do {
             try task.execute()
@@ -54,10 +54,10 @@ class ExpressionCallValidatorTaskTests: BaseFrameworkTests {
         }
     }
 
-    func test_check_hasTypeUsage_noViolations() {
+    func test_execute_hasTypeUsage_noViolations() {
         let url = fixtureUrl(for: "UsageType.swift")
         let content = try! String(contentsOf: url)
-        let task = ExpressionCallValidatorTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
+        let task = ExpressionCallValidationTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
         do {
             try task.execute()
@@ -66,10 +66,10 @@ class ExpressionCallValidatorTaskTests: BaseFrameworkTests {
         }
     }
 
-    func test_check_hasIViolations() {
+    func test_execute_hasIViolations() {
         let url = fixtureUrl(for: "ViolateInstantiation.swift")
         let content = try! String(contentsOf: url)
-        let task = ExpressionCallValidatorTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
+        let task = ExpressionCallValidationTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
         do {
             try task.execute()

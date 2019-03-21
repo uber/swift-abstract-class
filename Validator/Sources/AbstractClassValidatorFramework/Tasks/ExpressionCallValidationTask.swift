@@ -22,7 +22,7 @@ import SourceParsingFramework
 /// A task that validates a file containing expression call abstract
 /// class usages to ensure abstract class types are not directly
 /// instantiated.
-class ExpressionCallValidatorTask: AbstractTask<Void> {
+class ExpressionCallValidationTask: AbstractTask<Void> {
 
     /// Initializer.
     ///
