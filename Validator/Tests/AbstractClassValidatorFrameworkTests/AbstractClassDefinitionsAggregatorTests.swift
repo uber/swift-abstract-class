@@ -40,31 +40,31 @@ class AbstractClassDefinitionsAggregatorTests: BaseFrameworkTests {
         let results = aggregator.aggregate(abstractClassDefinitions: definitions)
 
         for definition in results {
-            switch definition.name {
+            switch definition.value.name {
             case "Child":
                 let allVars = grandParentVars + parentVars + childVars
                 for v in allVars {
-                    XCTAssertTrue(definition.vars.contains(v))
+                    XCTAssertTrue(definition.aggregatedVars.contains(v))
                 }
                 let allMethods = grandParentMethods + parentMethods + childMethods
                 for m in allMethods {
-                    XCTAssertTrue(definition.methods.contains(m))
+                    XCTAssertTrue(definition.aggregatedMethods.contains(m))
                 }
             case "Parent":
                 let allVars = grandParentVars + parentVars
                 for v in allVars {
-                    XCTAssertTrue(definition.vars.contains(v))
+                    XCTAssertTrue(definition.aggregatedVars.contains(v))
                 }
                 let allMethods = grandParentMethods + parentMethods
                 for m in allMethods {
-                    XCTAssertTrue(definition.methods.contains(m))
+                    XCTAssertTrue(definition.aggregatedMethods.contains(m))
                 }
             case "GrandParent":
                 for v in grandParentVars {
-                    XCTAssertTrue(definition.vars.contains(v))
+                    XCTAssertTrue(definition.aggregatedVars.contains(v))
                 }
                 for m in grandParentMethods {
-                    XCTAssertTrue(definition.methods.contains(m))
+                    XCTAssertTrue(definition.aggregatedMethods.contains(m))
                 }
             default:
                 XCTFail()

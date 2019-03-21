@@ -18,13 +18,27 @@ import Foundation
 
 /// A reference based model representing a concrete subclass of an abstract
 /// class. In other words, the leaf node in an abstract class hierarchy.
-struct ConcreteSubclassDefinition {
+struct ConcreteSubclassDefinition: Hashable {
     /// The name of the class.
     let name: String
     /// The properties, both `var` and `let` of this class.
-    let properties: [VarDefinition]
+    let vars: [VarDefinition]
     /// The methods of this class.
     let methods: [MethodDefinition]
     /// The names of inherited types.
     let inheritedTypes: [String]
+}
+
+/// A data model representing the definition of a concrete subclass of an
+/// abstract class that has been aggregated with its ancestor abstract
+/// classes.
+struct AggregatedConcreteSubclassDefinition: Hashable {
+    /// The definition itself.
+    let value: ConcreteSubclassDefinition
+    /// The aggregated properties, both `var` and `let` of this class
+    /// and all the properties of this class's ancestors.
+    let aggregatedVars: [VarDefinition]
+    /// The aggregated method definitions, including all the method
+    /// definitions of this class's ancestors.
+    let aggregatedMethods: [MethodDefinition]
 }

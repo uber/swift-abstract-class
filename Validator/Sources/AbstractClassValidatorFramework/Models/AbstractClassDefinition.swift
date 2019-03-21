@@ -20,10 +20,10 @@ import Foundation
 let abstractMethodType = "abstractMethod"
 
 /// A data model representing the definition of an abstract class.
-struct AbstractClassDefinition: Equatable {
+struct AbstractClassDefinition: Hashable {
     /// The name of the abstract class.
     let name: String
-    /// The vars definitions.
+    /// The properties, both `var` and `let` of this class.
     let vars: [VarDefinition]
     /// The method definitions.
     let methods: [MethodDefinition]
@@ -32,7 +32,7 @@ struct AbstractClassDefinition: Equatable {
 }
 
 /// A data model representing the definition of a method.
-struct MethodDefinition: Equatable {
+struct MethodDefinition: Hashable {
     /// The name of the method.
     let name: String
     /// The return type of the method.
@@ -48,11 +48,24 @@ struct MethodDefinition: Equatable {
 
 /// A data model representing the definition of a computed
 /// property.
-struct VarDefinition: Equatable {
+struct VarDefinition: Hashable {
     /// The name of the property.
     let name: String
     /// The return type of the property.
     let returnType: String
     /// Indicates if this property is an abstract method.
     let isAbstract: Bool
+}
+
+/// A data model representing the definition of an abstract class that
+/// has been aggregated with its ancestor abstract classes.
+struct AggregatedAbstractClassDefinition: Hashable {
+    /// The definition itself.
+    let value: AbstractClassDefinition
+    /// The aggregated properties, both `var` and `let` of this class
+    /// and all the properties of this class's ancestors.
+    let aggregatedVars: [VarDefinition]
+    /// The aggregated method definitions, including all the method
+    /// definitions of this class's ancestors.
+    let aggregatedMethods: [MethodDefinition]
 }
