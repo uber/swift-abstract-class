@@ -52,11 +52,11 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
         // child should have been filtered out by the usage filter, since
         // Parent is not an abstract class.
         for concreteDefinition in aggregatedConcreteSubclassDefinitions {
-            if let result = try validateVars(of: concreteDefinition) {
+            if let result = validateVars(of: concreteDefinition) {
                 return result
             }
 
-            if let result = try validateMethods(of: concreteDefinition) {
+            if let result = validateMethods(of: concreteDefinition) {
                 return result
             }
         }
@@ -68,7 +68,7 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
 
     private let aggregatedConcreteSubclassDefinitions: [AggregatedConcreteSubclassDefinition]
 
-    private func validateVars(of concreteDefinition: AggregatedConcreteSubclassDefinition) throws -> ValidationResult? {
+    private func validateVars(of concreteDefinition: AggregatedConcreteSubclassDefinition) -> ValidationResult? {
         let abstractVarSignatures = Set(concreteDefinition.aggregatedVars.filter { $0.isAbstract }.map { VarSignature(definition: $0) })
         let concreteVarSignatures = Set(concreteDefinition.aggregatedVars.filter { !$0.isAbstract }.map { VarSignature(definition: $0) })
 
@@ -81,7 +81,7 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
         return nil
     }
 
-    private func validateMethods(of concreteDefinition: AggregatedConcreteSubclassDefinition) throws -> ValidationResult? {
+    private func validateMethods(of concreteDefinition: AggregatedConcreteSubclassDefinition) -> ValidationResult? {
         let abstractMethodSignatures = Set(concreteDefinition.aggregatedMethods.filter { $0.isAbstract }.map { MethodSignature(definition: $0) })
         let concreteMethodSignatures = Set(concreteDefinition.aggregatedMethods.filter { !$0.isAbstract }.map { MethodSignature(definition: $0) })
 
