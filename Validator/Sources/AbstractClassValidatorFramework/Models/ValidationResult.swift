@@ -16,13 +16,8 @@
 
 import Foundation
 
-/// A list of IDs of task types used in the validator.
-enum TaskIds: Int {
-    case declarationsFilterTask = 1
-    case declarationsProducerTask = 2
-    case expressionCallUsageFilterTask = 3
-    case subclassUsageFilterTask = 4
-    case concreteSubclassProducerTask = 5
-    case expressionCallValidationTask = 6
-    case concreteSubclassValidationTask = 7
+/// The result of validation tasks.
+enum ValidationResult {
+    case success
+    case failureWithReason(String)
 }

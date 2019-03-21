@@ -81,7 +81,13 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
 
     func test_execute_noDefinitions_verifyNoError() {
         let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [])
-        try! task.execute()
+        let result = try! task.execute()
+        switch result {
+        case .success:
+            break
+        default:
+            XCTFail()
+        }
     }
 
     func test_execute_hasValidDefinitions_verifyNoError() {
@@ -102,7 +108,13 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
 
         let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
 
-        try! task.execute()
+        let result = try! task.execute()
+        switch result {
+        case .success:
+            break
+        default:
+            XCTFail()
+        }
     }
 
     func test_execute_missingMiddleVarDefinitions_verifyError() {
@@ -123,13 +135,13 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
 
         let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
 
-        do {
-            try task.execute()
-        } catch GenericError.withMessage(let message) {
-            XCTAssertTrue(message.contains(aggregatedParentClass.value.name))
-            XCTAssertTrue(message.contains("(pV2: PV2)"))
-            XCTAssertTrue(message.contains("(pV1: PV1)"))
-        } catch  {
+        let result = try! task.execute()
+        switch result {
+        case .failureWithReason(let reason):
+            XCTAssertTrue(reason.contains(aggregatedParentClass.value.name))
+            XCTAssertTrue(reason.contains("(pV2: PV2)"))
+            XCTAssertTrue(reason.contains("(pV1: PV1)"))
+        default:
             XCTFail()
         }
     }
@@ -152,12 +164,12 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
 
         let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
 
-        do {
-            try task.execute()
-        } catch GenericError.withMessage(let message) {
-            XCTAssertTrue(message.contains(aggregatedChildClass.value.name))
-            XCTAssertTrue(message.contains("(cV: CV)"))
-        } catch  {
+        let result = try! task.execute()
+        switch result {
+        case .failureWithReason(let reason):
+            XCTAssertTrue(reason.contains(aggregatedChildClass.value.name))
+            XCTAssertTrue(reason.contains("(cV: CV)"))
+        default:
             XCTFail()
         }
     }
@@ -180,13 +192,13 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
 
         let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
 
-        do {
-            try task.execute()
-        } catch GenericError.withMessage(let message) {
-            XCTAssertTrue(message.contains(aggregatedParentClass.value.name))
-            XCTAssertTrue(message.contains("(gM1() -> GM1)"))
-            XCTAssertTrue(message.contains("(gM2(_: GMP1, arg2: GMP2) -> GM2)"))
-        } catch  {
+        let result = try! task.execute()
+        switch result {
+        case .failureWithReason(let reason):
+            XCTAssertTrue(reason.contains(aggregatedParentClass.value.name))
+            XCTAssertTrue(reason.contains("(gM1() -> GM1)"))
+            XCTAssertTrue(reason.contains("(gM2(_: GMP1, arg2: GMP2) -> GM2)"))
+        default:
             XCTFail()
         }
     }
@@ -209,12 +221,12 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
 
         let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
 
-        do {
-            try task.execute()
-        } catch GenericError.withMessage(let message) {
-            XCTAssertTrue(message.contains(aggregatedChildClass.value.name))
-            XCTAssertTrue(message.contains("(cM(arg: CMP) -> CM)"))
-        } catch  {
+        let result = try! task.execute()
+        switch result {
+        case .failureWithReason(let reason):
+            XCTAssertTrue(reason.contains(aggregatedChildClass.value.name))
+            XCTAssertTrue(reason.contains("(cM(arg: CMP) -> CM)"))
+        default:
             XCTFail()
         }
     }
