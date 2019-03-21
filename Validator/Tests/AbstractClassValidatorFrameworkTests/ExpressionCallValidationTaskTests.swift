@@ -35,9 +35,11 @@ class ExpressionCallValidationTaskTests: BaseFrameworkTests {
         let content = try! String(contentsOf: url)
         let task = ExpressionCallValidationTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
-        do {
-            try task.execute()
-        } catch {
+        let result = try! task.execute()
+        switch result {
+        case .success:
+            break
+        default:
             XCTFail()
         }
     }
@@ -47,9 +49,11 @@ class ExpressionCallValidationTaskTests: BaseFrameworkTests {
         let content = try! String(contentsOf: url)
         let task = ExpressionCallValidationTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
-        do {
-            try task.execute()
-        } catch {
+        let result = try! task.execute()
+        switch result {
+        case .success:
+            break
+        default:
             XCTFail()
         }
     }
@@ -59,9 +63,11 @@ class ExpressionCallValidationTaskTests: BaseFrameworkTests {
         let content = try! String(contentsOf: url)
         let task = ExpressionCallValidationTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
-        do {
-            try task.execute()
-        } catch {
+        let result = try! task.execute()
+        switch result {
+        case .success:
+            break
+        default:
             XCTFail()
         }
     }
@@ -71,13 +77,12 @@ class ExpressionCallValidationTaskTests: BaseFrameworkTests {
         let content = try! String(contentsOf: url)
         let task = ExpressionCallValidationTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: [abstractClassDefinition])
 
-        do {
-            try task.execute()
-            XCTFail()
-        } catch GenericError.withMessage(let message) {
-            XCTAssertTrue(message.contains(abstractClassDefinition.name))
-            XCTAssertTrue(message.contains(url.path))
-        } catch {
+        let result = try! task.execute()
+        switch result {
+        case .failureWithReason(let reason):
+            XCTAssertTrue(reason.contains(abstractClassDefinition.name))
+            XCTAssertTrue(reason.contains(url.path))
+        default:
             XCTFail()
         }
     }

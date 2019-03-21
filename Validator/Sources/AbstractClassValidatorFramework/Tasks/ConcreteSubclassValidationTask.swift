@@ -22,7 +22,7 @@ import SourceParsingFramework
 /// A task that validates concrete subclasses of abstract classes must
 /// provide implementations for all abstract properties and methods
 /// declared in its class hierarchy.
-class ConcreteSubclassValidationTask: AbstractTask<Void> {
+class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
 
     /// Initializer.
     ///
@@ -31,15 +31,17 @@ class ConcreteSubclassValidationTask: AbstractTask<Void> {
     /// property and method definitions of their inherited superclasses.
     init(aggregatedConcreteSubclassDefinitions: [AggregatedConcreteSubclassDefinition]) {
         self.aggregatedConcreteSubclassDefinitions = aggregatedConcreteSubclassDefinitions
+        super.init(id: TaskIds.concreteSubclassValidationTask.rawValue)
     }
 
     /// Execute the task and validate the given aggregated concrete
     /// subclass definitions for inheritance usages.
     ///
+    /// - returns: The validation result.
     /// - throws: Any error occurred during execution.
-    override func execute() throws -> Void {
+    override func execute() throws -> ValidationResult {
         guard !aggregatedConcreteSubclassDefinitions.isEmpty else {
-            return
+            return .success
         }
 
         // Check the entire inheritance chain's abstract properties and
@@ -50,33 +52,42 @@ class ConcreteSubclassValidationTask: AbstractTask<Void> {
         // child should have been filtered out by the usage filter, since
         // Parent is not an abstract class.
         for concreteDefinition in aggregatedConcreteSubclassDefinitions {
-            try validateVars(of: concreteDefinition)
-            try validateMethods(of: concreteDefinition)
+            if let result = try validateVars(of: concreteDefinition) {
+                return result
+            }
+
+            if let result = try validateMethods(of: concreteDefinition) {
+                return result
+            }
         }
+
+        return .success
     }
 
     // MARK: - Private
 
     private let aggregatedConcreteSubclassDefinitions: [AggregatedConcreteSubclassDefinition]
 
-    private func validateVars(of concreteDefinition: AggregatedConcreteSubclassDefinition) throws {
+    private func validateVars(of concreteDefinition: AggregatedConcreteSubclassDefinition) throws -> ValidationResult? {
         let abstractVarSignatures = Set(concreteDefinition.aggregatedVars.filter { $0.isAbstract }.map { VarSignature(definition: $0) })
         let concreteVarSignatures = Set(concreteDefinition.aggregatedVars.filter { !$0.isAbstract }.map { VarSignature(definition: $0) })
 
         let nonImplementedVars = abstractVarSignatures.subtracting(concreteVarSignatures)
         if !nonImplementedVars.isEmpty {
             let varSignatures = nonImplementedVars.map { "(\($0.name): \($0.returnType))" }.joined(separator: ", ")
-            throw GenericError.withMessage("\(concreteDefinition.value.name) missing abstract property implementations of \(varSignatures)")
+            return .failureWithReason("\(concreteDefinition.value.name) missing abstract property implementations of \(varSignatures)")
         }
+
+        return nil
     }
 
-    private func validateMethods(of concreteDefinition: AggregatedConcreteSubclassDefinition) throws {
+    private func validateMethods(of concreteDefinition: AggregatedConcreteSubclassDefinition) throws -> ValidationResult? {
         let abstractMethodSignatures = Set(concreteDefinition.aggregatedMethods.filter { $0.isAbstract }.map { MethodSignature(definition: $0) })
         let concreteMethodSignatures = Set(concreteDefinition.aggregatedMethods.filter { !$0.isAbstract }.map { MethodSignature(definition: $0) })
 
         let nonImplementedMethods = abstractMethodSignatures.subtracting(concreteMethodSignatures)
         guard !nonImplementedMethods.isEmpty else {
-            return
+            return nil
         }
 
         let methodSignatures = nonImplementedMethods
@@ -108,7 +119,8 @@ class ConcreteSubclassValidationTask: AbstractTask<Void> {
                 }
             }
             .joined(separator: ", ")
-        throw GenericError.withMessage("\(concreteDefinition.value.name) missing abstract method implementations of \(methodSignatures)")
+
+        return .failureWithReason("\(concreteDefinition.value.name) missing abstract method implementations of \(methodSignatures)")
     }
 }
 

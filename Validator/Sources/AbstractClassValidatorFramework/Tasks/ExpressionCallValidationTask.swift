@@ -22,7 +22,7 @@ import SourceParsingFramework
 /// A task that validates a file containing expression call abstract
 /// class usages to ensure abstract class types are not directly
 /// instantiated.
-class ExpressionCallValidationTask: AbstractTask<Void> {
+class ExpressionCallValidationTask: AbstractTask<ValidationResult> {
 
     /// Initializer.
     ///
@@ -34,16 +34,17 @@ class ExpressionCallValidationTask: AbstractTask<Void> {
         self.sourceUrl = sourceUrl
         self.sourceContent = sourceContent
         self.abstractClassDefinitions = abstractClassDefinitions
-        super.init(id: TaskIds.expressionCallValidatorTask.rawValue)
+        super.init(id: TaskIds.expressionCallValidationTask.rawValue)
     }
 
     /// Execute the task and validate the given file's expression call
     /// usages.
     ///
+    /// - returns: The validation result.
     /// - throws: Any error occurred during execution.
-    override func execute() throws {
+    override func execute() throws -> ValidationResult {
         guard !abstractClassDefinitions.isEmpty else {
-            return
+            return .success
         }
 
         let abstractClassNames = Set<String>(abstractClassDefinitions.map { (definition: AbstractClassDefinition) -> String in
@@ -66,9 +67,11 @@ class ExpressionCallValidationTask: AbstractTask<Void> {
 
         for type in expressionCallTypes {
             if abstractClassNames.contains(type) {
-                throw GenericError.withMessage("Abstract class \(type) should not be directly instantiated in file \(sourceUrl.path)")
+                return .failureWithReason("Abstract class \(type) should not be directly instantiated in file \(sourceUrl.path)")
             }
         }
+
+        return .success
     }
 
     // MARK: - Private
