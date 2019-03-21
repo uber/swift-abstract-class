@@ -75,38 +75,40 @@ class ConcreteSubclassValidationTask: AbstractTask<Void> {
         let concreteMethodSignatures = Set(concreteDefinition.aggregatedMethods.filter { !$0.isAbstract }.map { MethodSignature(definition: $0) })
 
         let nonImplementedMethods = abstractMethodSignatures.subtracting(concreteMethodSignatures)
-        if !nonImplementedMethods.isEmpty {
-            let methodSignatures = nonImplementedMethods
-                .map { (signature: MethodSignature) -> String in
-                    let signatureComponents = signature.name.components(separatedBy: ":")
-                    let signatureNameAndParams: String
-                    if signatureComponents.count > 1 {
-                        var parameters = signature.parameterTypes
-                        var signatureWithParams = [String]()
-                        for component in signatureComponents {
-                            signatureWithParams.append(component)
+        guard !nonImplementedMethods.isEmpty else {
+            return
+        }
+
+        let methodSignatures = nonImplementedMethods
+            .map { (signature: MethodSignature) -> String in
+                let signatureComponents = signature.name.components(separatedBy: ":")
+                let signatureNameAndParams: String
+                if signatureComponents.count > 1 {
+                    var parameters = signature.parameterTypes
+                    var signatureWithParams = [String]()
+                    for component in signatureComponents {
+                        signatureWithParams.append(component)
+                        if !parameters.isEmpty {
+                            let parameter = parameters.removeFirst()
+                            signatureWithParams.append(": \(parameter)")
                             if !parameters.isEmpty {
-                                let parameter = parameters.removeFirst()
-                                signatureWithParams.append(": \(parameter)")
-                                if !parameters.isEmpty {
-                                    signatureWithParams.append(", ")
-                                }
+                                signatureWithParams.append(", ")
                             }
                         }
-                        signatureNameAndParams = "\(signatureWithParams.joined())"
-                    } else {
-                        signatureNameAndParams = "\(signature.name)()"
                     }
-
-                    if let returnType = signature.returnType {
-                        return "(\(signatureNameAndParams) -> \(returnType))"
-                    } else {
-                        return "(\(signatureNameAndParams))"
-                    }
+                    signatureNameAndParams = "\(signatureWithParams.joined())"
+                } else {
+                    signatureNameAndParams = "\(signature.name)()"
                 }
-                .joined(separator: ", ")
-            throw GenericError.withMessage("\(concreteDefinition.value.name) missing abstract method implementations of \(methodSignatures)")
-        }
+
+                if let returnType = signature.returnType {
+                    return "(\(signatureNameAndParams) -> \(returnType))"
+                } else {
+                    return "(\(signatureNameAndParams))"
+                }
+            }
+            .joined(separator: ", ")
+        throw GenericError.withMessage("\(concreteDefinition.value.name) missing abstract method implementations of \(methodSignatures)")
     }
 }
 
