@@ -52,16 +52,12 @@ class ConcreteSubclassDefinitionsAggregator {
 
         // Consolidate each definition with its ancestor definitions.
         return parentedConcreteDefinitions.map { (definition: ParentedConcreteSubclassDefinition) -> AggregatedConcreteSubclassDefinition in
-            var allVars = Set<VarDefinition>(definition.value.vars)
-            var allMethods = Set<MethodDefinition>(definition.value.methods)
-            for ancestor in definition.ancestors {
-                for varDefinition in ancestor.aggregatedVars {
-                    allVars.insert(varDefinition)
-                }
-                for methodDefinition in ancestor.aggregatedMethods {
-                    allMethods.insert(methodDefinition)
-                }
-            }
+            let allAncestorVars = definition.ancestors.flatMap { $0.aggregatedVars }
+            let allVars = Set<VarDefinition>(definition.value.vars).union(allAncestorVars)
+
+            let allAncestorMethods = definition.ancestors.flatMap { $0.aggregatedMethods }
+            let allMethods = Set<MethodDefinition>(definition.value.methods).union(allAncestorMethods)
+
             return AggregatedConcreteSubclassDefinition(value: definition.value, aggregatedVars: Array(allVars), aggregatedMethods: Array(allMethods))
         }
     }
