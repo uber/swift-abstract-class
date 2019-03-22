@@ -21,16 +21,21 @@ import SourceKittenFramework
 /// of common abstract class AST properties.
 extension Structure {
 
-    /// All the instance properties of this structure. This does not include
+    /// All the computed properties of this structure. This does not include
     /// recursive structures.
-    var vars: [VarDefinition] {
+    var computedVars: [VarDefinition] {
         var definitions = [VarDefinition]()
 
         var substructures = self.substructures
         while !substructures.isEmpty {
             let sub = substructures.removeFirst()
 
-            if let subType = sub.type, subType == .varInstance {
+            // Swift compiler ensures overriding computed properties must
+            // have explicit types, and cannot be stored properties. If
+            // the substructure does not have a return type, then it's not
+            // a computed property. Therefore it cannot be abstract or an
+            // override of an abstract property. So we do not have to parse.
+            if let subType = sub.type, subType == .varInstance, let returnType = sub.returnType {
                 // If next substructure is an expression call to `abstractMethod`,
                 // then the current substructure is an abstract var.
                 let isAbstract: Bool
@@ -44,7 +49,7 @@ extension Structure {
                 }
 
                 // Properties must have return types.
-                definitions.append(VarDefinition(name: sub.name, returnType: sub.returnType!, isAbstract: isAbstract))
+                definitions.append(VarDefinition(name: sub.name, returnType: returnType, isAbstract: isAbstract))
             }
         }
 

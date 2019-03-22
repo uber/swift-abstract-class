@@ -44,7 +44,7 @@ class DeclarationProducerTask: AbstractTask<[AbstractClassDefinition]> {
             return structure
                 .filterSubstructure(by: SwiftDeclarationKind.class.rawValue, recursively: true)
                 .compactMap { (declaration: Structure) -> AbstractClassDefinition? in
-                    let vars = declaration.vars
+                    let vars = declaration.computedVars
                     let hasAbstractVars = vars.contains { $0.isAbstract }
                     let methods = declaration.methods
                     let hasAbstractMethods = methods.contains { $0.isAbstract }

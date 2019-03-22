@@ -60,7 +60,7 @@ class ConcreteSubclassProducerTask: AbstractTask<[ConcreteSubclassDefinition]> {
                     // sure it is a concrete class.
                     let inheritedTypes = classStructure.inheritedTypes
                     if inheritedTypes.isAnyElement(in: abstractClassNames) {
-                        let hasAbstractVars = classStructure.vars.contains { $0.isAbstract }
+                        let hasAbstractVars = classStructure.computedVars.contains { $0.isAbstract }
                         guard !hasAbstractVars else {
                             return nil
                         }
