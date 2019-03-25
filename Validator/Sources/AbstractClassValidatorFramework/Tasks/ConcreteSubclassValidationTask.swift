@@ -70,7 +70,7 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
         let nonImplementedVars = abstractVarSignatures.subtracting(concreteVarSignatures)
         if !nonImplementedVars.isEmpty {
             let varSignatures = nonImplementedVars.map { "(\($0.name): \($0.returnType))" }.joined(separator: ", ")
-            return .failureWithReason("\(concreteDefinition.value.name) missing abstract property implementations of \(varSignatures)")
+            return .failureWithReason("Class \(concreteDefinition.value.name) is missing abstract property implementations of \(varSignatures)")
         }
 
         return .success
@@ -115,7 +115,7 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
             }
             .joined(separator: ", ")
 
-        return .failureWithReason("\(concreteDefinition.value.name) missing abstract method implementations of \(methodSignatures)")
+        return .failureWithReason("Class \(concreteDefinition.value.name) is missing abstract method implementations of \(methodSignatures)")
     }
 }
 

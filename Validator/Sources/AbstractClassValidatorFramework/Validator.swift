@@ -67,6 +67,9 @@ public class Validator {
         let abstractClassDefinitions = try parseAbstractClassDefinitions(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, waitUpTo: timeout)
 
         try validateExpressionCalls(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, against: abstractClassDefinitions, using: executor, waitUpTo: timeout)
+
+        let aggregatedConcreteSubclassDefinitions = try parseAggregatedConcreteSubclassDefinitions(from: sourceRootUrls, of: abstractClassDefinitions, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, waitUpTo: timeout)
+        try validateImplementations(of: aggregatedConcreteSubclassDefinitions, using: executor, waitUpTo: timeout)
     }
 
     // MARK: - Private
@@ -170,6 +173,73 @@ public class Validator {
                 throw GenericError.withMessage("Processing \(urlHandle.1.path) timed out while executing task with Id \(taskId)")
             } catch {
                 throw error
+            }
+        }
+    }
+
+    // MARK: - Subclass Definitions
+
+    private func parseAggregatedConcreteSubclassDefinitions(from sourceRootUrls: [URL], of abstractClassDefinitions: [AbstractClassDefinition], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor, waitUpTo timeout: TimeInterval) throws -> [AggregatedConcreteSubclassDefinition] {
+        // Parse all URLs.
+        let urlTaskHandles = try executeAndCollectTaskHandles(with: sourceRootUrls, sourcesListFormatValue: sourcesListFormatValue) { (fileUrl: URL) -> SequenceExecutionHandle<[ConcreteSubclassDefinition]> in
+            let filterTask = SubclassUsageFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, abstractClassDefinitions: abstractClassDefinitions)
+
+            return executor.executeSequence(from: filterTask) { (currentTask: Task, currentResult: Any) -> SequenceExecution<[ConcreteSubclassDefinition]> in
+                if currentTask is SubclassUsageFilterTask, let filterResult = currentResult as? FilterResult {
+                    switch filterResult {
+                    case .shouldProcess(let url, let content):
+                        return .continueSequence(ConcreteSubclassProducerTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: abstractClassDefinitions))
+                    case .skip:
+                        return .endOfSequence([ConcreteSubclassDefinition]())
+                    }
+                } else if currentTask is ConcreteSubclassProducerTask, let definitions = currentResult as? [ConcreteSubclassDefinition] {
+                    return .endOfSequence(definitions)
+                } else {
+                    fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+                }
+            }
+        }
+
+        // Wait for parsing results.
+        var definitions = [ConcreteSubclassDefinition]()
+        for urlHandle in urlTaskHandles {
+            do {
+                let result = try urlHandle.0.await(withTimeout: timeout)
+                definitions.append(contentsOf: result)
+            } catch SequenceExecutionError.awaitTimeout(let taskId) {
+                throw GenericError.withMessage("Processing \(urlHandle.1.path) timed out while executing task with Id \(taskId)")
+            } catch {
+                throw error
+            }
+        }
+
+        let aggregatedAbstractClassDefinitions = AbstractClassDefinitionsAggregator().aggregate(abstractClassDefinitions: abstractClassDefinitions)
+        return ConcreteSubclassDefinitionsAggregator().aggregate(leafConcreteSubclassDefinitions: definitions, aggregatedAncestorAbstractClassDefinitions: aggregatedAbstractClassDefinitions)
+    }
+
+    // MARK: - Concrete Subclass Validation
+
+    private func validateImplementations(of aggregatedConcreteSubclassDefinitions: [AggregatedConcreteSubclassDefinition], using executor: SequenceExecutor, waitUpTo timeout: TimeInterval) throws {
+        var taskHandles = [SequenceExecutionHandle<ValidationResult>]()
+        for definition in aggregatedConcreteSubclassDefinitions {
+            let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinition: definition)
+            let handle = executor.executeSequence(from: task) { (currentTask: Task, currentResult: Any) -> SequenceExecution<ValidationResult> in
+                if currentTask is ConcreteSubclassValidationTask, let validationResult = currentResult as? ValidationResult {
+                    return .endOfSequence(validationResult)
+                } else {
+                    fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+                }
+            }
+            taskHandles.append(handle)
+        }
+
+        for handle in taskHandles {
+            let result = try handle.await(withTimeout: timeout)
+            switch result {
+            case .success:
+                break
+            case .failureWithReason(let reason):
+                throw GenericError.withMessage(reason)
             }
         }
     }
