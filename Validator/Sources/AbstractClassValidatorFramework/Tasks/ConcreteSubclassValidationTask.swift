@@ -26,11 +26,12 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
 
     /// Initializer.
     ///
-    /// - parameter aggregatedConcreteSubclassDefinitions: The aggregated
-    /// concrete subclass definitions where definitions include concrete
-    /// property and method definitions of their inherited superclasses.
-    init(aggregatedConcreteSubclassDefinitions: [AggregatedConcreteSubclassDefinition]) {
-        self.aggregatedConcreteSubclassDefinitions = aggregatedConcreteSubclassDefinitions
+    /// - parameter aggregatedConcreteSubclassDefinition: The aggregated
+    /// concrete subclass definition where each definition includes
+    /// concrete property and method definitions of its inherited
+    /// superclasses.
+    init(aggregatedConcreteSubclassDefinition: AggregatedConcreteSubclassDefinition) {
+        self.aggregatedConcreteSubclassDefinition = aggregatedConcreteSubclassDefinition
         super.init(id: TaskIds.concreteSubclassValidationTask.rawValue)
     }
 
@@ -40,10 +41,6 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
     /// - returns: The validation result.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> ValidationResult {
-        guard !aggregatedConcreteSubclassDefinitions.isEmpty else {
-            return .success
-        }
-
         // Check the entire inheritance chain's abstract properties and
         // methods are fulfilled by the entire chain. If GrandParent has
         // two abstract properties, Parent fulfills one and declares the
@@ -51,24 +48,22 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
         // the second abstract property. If Parent fulfilled both, then
         // child should have been filtered out by the usage filter, since
         // Parent is not an abstract class.
-        for concreteDefinition in aggregatedConcreteSubclassDefinitions {
-            if let result = validateVars(of: concreteDefinition) {
-                return result
-            }
-
-            if let result = validateMethods(of: concreteDefinition) {
-                return result
-            }
+        let result = validateVars(of: aggregatedConcreteSubclassDefinition)
+        switch result {
+        case .success:
+            break
+        case .failureWithReason(_):
+            return result
         }
 
-        return .success
+        return validateMethods(of: aggregatedConcreteSubclassDefinition)
     }
 
     // MARK: - Private
 
-    private let aggregatedConcreteSubclassDefinitions: [AggregatedConcreteSubclassDefinition]
+    private let aggregatedConcreteSubclassDefinition: AggregatedConcreteSubclassDefinition
 
-    private func validateVars(of concreteDefinition: AggregatedConcreteSubclassDefinition) -> ValidationResult? {
+    private func validateVars(of concreteDefinition: AggregatedConcreteSubclassDefinition) -> ValidationResult {
         let abstractVarSignatures = Set(concreteDefinition.aggregatedVars.filter { $0.isAbstract }.map { VarSignature(definition: $0) })
         let concreteVarSignatures = Set(concreteDefinition.aggregatedVars.filter { !$0.isAbstract }.map { VarSignature(definition: $0) })
 
@@ -78,16 +73,16 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
             return .failureWithReason("\(concreteDefinition.value.name) missing abstract property implementations of \(varSignatures)")
         }
 
-        return nil
+        return .success
     }
 
-    private func validateMethods(of concreteDefinition: AggregatedConcreteSubclassDefinition) -> ValidationResult? {
+    private func validateMethods(of concreteDefinition: AggregatedConcreteSubclassDefinition) -> ValidationResult {
         let abstractMethodSignatures = Set(concreteDefinition.aggregatedMethods.filter { $0.isAbstract }.map { MethodSignature(definition: $0) })
         let concreteMethodSignatures = Set(concreteDefinition.aggregatedMethods.filter { !$0.isAbstract }.map { MethodSignature(definition: $0) })
 
         let nonImplementedMethods = abstractMethodSignatures.subtracting(concreteMethodSignatures)
         guard !nonImplementedMethods.isEmpty else {
-            return nil
+            return .success
         }
 
         let methodSignatures = nonImplementedMethods

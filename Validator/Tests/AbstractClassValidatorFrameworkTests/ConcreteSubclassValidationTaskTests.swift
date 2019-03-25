@@ -79,25 +79,8 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         childConcreteClass = ConcreteSubclassDefinition(name: "ChildLeaf", vars: childAdditionalConcreteVars, methods: childAdditionalConcreteMethods, inheritedTypes: ["GrandParent", "Parent", "Child"])
     }
 
-    func test_execute_noDefinitions_verifyNoError() {
-        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [])
-        let result = try! task.execute()
-        switch result {
-        case .success:
-            break
-        default:
-            XCTFail()
-        }
-    }
-
     func test_execute_hasValidDefinitions_verifyNoError() {
         // Splitting these expressions since Swift compiler thinks it's too complex.
-        let parentVars1 = grandParentAbstractVars + grandParentConcreteVars
-        let parentVars2 = parentAbstractVars + parentConcreteVars + parentAdditionalConcreteVars
-        let parentMethods1 = grandParentAbstractMethods + grandParentConcreteMethods
-        let parentMethods2 = parentAbstractMethods + parentConcreteMethods + parentAdditionalConcreteMethods
-        let aggregatedParentClass = AggregatedConcreteSubclassDefinition(value: parentConcreteClass, aggregatedVars: parentVars1 + parentVars2, aggregatedMethods: parentMethods1 + parentMethods2)
-
         let childVars1 = grandParentAbstractVars + grandParentConcreteVars
         let childVars2 = parentAbstractVars + parentConcreteVars + parentAdditionalConcreteVars
         let childVars3 = childAbstractVars + childConcreteVars + childAdditionalConcreteVars
@@ -106,7 +89,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         let childMethods3 = childAbstractMethods + childConcreteMethods + childAdditionalConcreteMethods
         let aggregatedChildClass = AggregatedConcreteSubclassDefinition(value: childConcreteClass, aggregatedVars: childVars1 + childVars2 + childVars3, aggregatedMethods: childMethods1 + childMethods2 + childMethods3)
 
-        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
+        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinition: aggregatedChildClass)
 
         let result = try! task.execute()
         switch result {
@@ -125,15 +108,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         let parentMethods2 = parentAbstractMethods + parentConcreteMethods + parentAdditionalConcreteMethods
         let aggregatedParentClass = AggregatedConcreteSubclassDefinition(value: parentConcreteClass, aggregatedVars: parentVars1 + parentVars2, aggregatedMethods: parentMethods1 + parentMethods2)
 
-        let childVars1 = grandParentAbstractVars + grandParentConcreteVars
-        let childVars2 = parentAbstractVars + parentConcreteVars + parentAdditionalConcreteVars
-        let childVars3 = childAbstractVars + childConcreteVars + childAdditionalConcreteVars
-        let childMethods1 = grandParentAbstractMethods + grandParentConcreteMethods
-        let childMethods2 = parentAbstractMethods + parentConcreteMethods + parentAdditionalConcreteMethods
-        let childMethods3 = childAbstractMethods + childConcreteMethods + childAdditionalConcreteMethods
-        let aggregatedChildClass = AggregatedConcreteSubclassDefinition(value: childConcreteClass, aggregatedVars: childVars1 + childVars2 + childVars3, aggregatedMethods: childMethods1 + childMethods2 + childMethods3)
-
-        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
+        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinition: aggregatedParentClass)
 
         let result = try! task.execute()
         switch result {
@@ -148,12 +123,6 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
 
     func test_execute_missingLeafVarDefinitions_verifyError() {
         // Splitting these expressions since Swift compiler thinks it's too complex.
-        let parentVars1 = grandParentAbstractVars + grandParentConcreteVars
-        let parentVars2 = parentAbstractVars + parentConcreteVars + parentAdditionalConcreteVars
-        let parentMethods1 = grandParentAbstractMethods + grandParentConcreteMethods
-        let parentMethods2 = parentAbstractMethods + parentConcreteMethods + parentAdditionalConcreteMethods
-        let aggregatedParentClass = AggregatedConcreteSubclassDefinition(value: parentConcreteClass, aggregatedVars: parentVars1 + parentVars2, aggregatedMethods: parentMethods1 + parentMethods2)
-
         let childVars1 = grandParentAbstractVars + grandParentConcreteVars
         let childVars2 = parentAbstractVars + parentConcreteVars + parentAdditionalConcreteVars
         let childVars3 = childAbstractVars + childAdditionalConcreteVars
@@ -162,7 +131,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         let childMethods3 = childAbstractMethods + childConcreteMethods + childAdditionalConcreteMethods
         let aggregatedChildClass = AggregatedConcreteSubclassDefinition(value: childConcreteClass, aggregatedVars: childVars1 + childVars2 + childVars3, aggregatedMethods: childMethods1 + childMethods2 + childMethods3)
 
-        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
+        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinition: aggregatedChildClass)
 
         let result = try! task.execute()
         switch result {
@@ -182,15 +151,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         let parentMethods2 = parentAbstractMethods + parentConcreteMethods + parentAdditionalConcreteMethods
         let aggregatedParentClass = AggregatedConcreteSubclassDefinition(value: parentConcreteClass, aggregatedVars: parentVars1 + parentVars2, aggregatedMethods: parentMethods1 + parentMethods2)
 
-        let childVars1 = grandParentAbstractVars + grandParentConcreteVars
-        let childVars2 = parentAbstractVars + parentConcreteVars + parentAdditionalConcreteVars
-        let childVars3 = childAbstractVars + childConcreteVars + childAdditionalConcreteVars
-        let childMethods1 = grandParentAbstractMethods + grandParentConcreteMethods
-        let childMethods2 = parentAbstractMethods + parentConcreteMethods + parentAdditionalConcreteMethods
-        let childMethods3 = childAbstractMethods + childConcreteMethods + childAdditionalConcreteMethods
-        let aggregatedChildClass = AggregatedConcreteSubclassDefinition(value: childConcreteClass, aggregatedVars: childVars1 + childVars2 + childVars3, aggregatedMethods: childMethods1 + childMethods2 + childMethods3)
-
-        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
+        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinition: aggregatedParentClass)
 
         let result = try! task.execute()
         switch result {
@@ -205,12 +166,6 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
 
     func test_execute_missingLeafMethodDefinitions_verifyError() {
         // Splitting these expressions since Swift compiler thinks it's too complex.
-        let parentVars1 = grandParentAbstractVars + grandParentConcreteVars
-        let parentVars2 = parentAbstractVars + parentConcreteVars + parentAdditionalConcreteVars
-        let parentMethods1 = grandParentAbstractMethods + grandParentConcreteMethods
-        let parentMethods2 = parentAbstractMethods + parentConcreteMethods + parentAdditionalConcreteMethods
-        let aggregatedParentClass = AggregatedConcreteSubclassDefinition(value: parentConcreteClass, aggregatedVars: parentVars1 + parentVars2, aggregatedMethods: parentMethods1 + parentMethods2)
-
         let childVars1 = grandParentAbstractVars + grandParentConcreteVars
         let childVars2 = parentAbstractVars + parentConcreteVars + parentAdditionalConcreteVars
         let childVars3 = childAbstractVars + childConcreteVars + childAdditionalConcreteVars
@@ -219,7 +174,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         let childMethods3 = childAbstractMethods + childAdditionalConcreteMethods
         let aggregatedChildClass = AggregatedConcreteSubclassDefinition(value: childConcreteClass, aggregatedVars: childVars1 + childVars2 + childVars3, aggregatedMethods: childMethods1 + childMethods2 + childMethods3)
 
-        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinitions: [aggregatedParentClass, aggregatedChildClass])
+        let task = ConcreteSubclassValidationTask(aggregatedConcreteSubclassDefinition: aggregatedChildClass)
 
         let result = try! task.execute()
         switch result {
