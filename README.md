@@ -40,7 +40,7 @@ class AnotherAbstractClass: MyAbstractClass {
 
 The second part of this project is the `abstractclassvalidator` executable. The validator parses a specified set of Swift source files to generate an in-memory graph of class hierarchies. Based on the classes data models, it then validates the implementations against the abstract class rules. Rules include abstract classes cannot be directly instantaited; concrete subclasses of abstract classes must provide implementations of all abstract properties and methods in their class hierarchy.
 
-In order to enable this validation to be performed at compile-time, a Xcode pre-build run-script phase is added for the project. Please refer to [Validator Integration section]() below for details.
+In order to enable this validation to be performed at compile-time, a Xcode pre-build run-script phase is added for the project. Please refer to [Validator Integration section](#Integrate-validator-with-Xcode) below for details.
 
 ## Installation
 
@@ -91,7 +91,7 @@ brew install abstractclassvalidator
 Even though the validator can be invoked from the commandline, it is most convenient when it's directly integrated with the build system. Since the vast marjority of Swift applications use Xcode as the build system, we'll cover this here.
 
 1. Download the latest valiordat binary, either manually from the [Releases page](https://github.com/uber/swift-abstract-class/releases), or using [Carthage](https://github.com/Carthage/Carthage) or [Homebrew](https://github.com/Homebrew/brew).
-2. Add a "Run Script" phase in the application's executable target's "Build Phases" section. ![](Images/build_phases.jpeg)
+2. Add a "Run Script" phase in the application's executable target's "Build Phases" section. ![](Images/build_phases.jpg)
 3. Make sure the "Shell" value is `/bin/sh`.
 4. Add a shell script that invokes the validator in the script box. For example, with binary downloaded using Carthage: `export SOURCEKIT_LOGGING=0 && ../Carthage/Checkouts/swift-abstract-class/Validator/bin/abstractclassvalidator validate Sources/`.
     * If installed via Carthage, the binary can be invoked by pointing to the Carthage checkout relative to where the Xcode project file is. In our sample, this path is `../Carthage/Checkouts/swift-abstract-class/Validator/bin/abstractclassvalidator validate`.
