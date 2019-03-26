@@ -52,4 +52,18 @@ class ValidatorTests: BaseFrameworkTests {
             XCTFail()
         }
     }
+
+    func test_validate_noExclusions_withImplementationViolations_verifyError() {
+        let sourceRoot = fixtureUrl(for: "/Integration/Invalid/Implementation/")
+
+        do {
+            try Validator().validate(from: [sourceRoot.path], excludingFilesEndingWith: [], excludingFilesWithPaths: [], shouldCollectParsingInfo: false, timeout: 10, concurrencyLimit: nil)
+            XCTFail()
+        } catch GenericError.withMessage(let message) {
+            XCTAssertTrue(message.contains("ChildConcrete"))
+            XCTAssertTrue(message.contains("(cAbstractVar: CVar)"))
+        } catch {
+            XCTFail()
+        }
+    }
 }
