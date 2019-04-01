@@ -66,7 +66,8 @@ class ValidateCommand: AbstractCommand {
             do {
                 try Validator().validate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, shouldCollectParsingInfo: shouldCollectParsingInfo, timeout: timeout, concurrencyLimit: concurrencyLimit)
             } catch GenericError.withMessage(let message) {
-                fatalError(message)
+                print(message)
+                exit(1)
             } catch {
                 fatalError("Unknown error: \(error)")
             }
