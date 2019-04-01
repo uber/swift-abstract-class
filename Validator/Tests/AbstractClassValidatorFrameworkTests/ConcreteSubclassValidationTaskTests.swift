@@ -75,8 +75,8 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
                              VarDefinition(name: "cLV2", returnType: "CLV2", isAbstract: false)]
         childAdditionalConcreteMethods = [MethodDefinition(name: "cLM", returnType: "CLM", parameterTypes: [], isAbstract: false)]
 
-        parentConcreteClass = ConcreteSubclassDefinition(name: "ParentLeaf", vars: parentAdditionalConcreteVars, methods: parentAdditionalConcreteMethods, inheritedTypes: ["GrandParent", "Parent"])
-        childConcreteClass = ConcreteSubclassDefinition(name: "ChildLeaf", vars: childAdditionalConcreteVars, methods: childAdditionalConcreteMethods, inheritedTypes: ["GrandParent", "Parent", "Child"])
+        parentConcreteClass = ConcreteSubclassDefinition(name: "ParentLeaf", vars: parentAdditionalConcreteVars, methods: parentAdditionalConcreteMethods, inheritedTypes: ["GrandParent", "Parent"], filePath: URL(fileURLWithPath: #file).path)
+        childConcreteClass = ConcreteSubclassDefinition(name: "ChildLeaf", vars: childAdditionalConcreteVars, methods: childAdditionalConcreteMethods, inheritedTypes: ["GrandParent", "Parent", "Child"], filePath: URL(fileURLWithPath: #file).path)
     }
 
     func test_execute_hasValidDefinitions_verifyNoError() {
@@ -116,6 +116,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
             XCTAssertTrue(reason.contains(aggregatedParentClass.value.name))
             XCTAssertTrue(reason.contains("(pV2: PV2)"))
             XCTAssertTrue(reason.contains("(pV1: PV1)"))
+            XCTAssertTrue(reason.contains(URL(fileURLWithPath: #file).path))
         default:
             XCTFail()
         }
@@ -138,6 +139,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         case .failureWithReason(let reason):
             XCTAssertTrue(reason.contains(aggregatedChildClass.value.name))
             XCTAssertTrue(reason.contains("(cV: CV)"))
+            XCTAssertTrue(reason.contains(URL(fileURLWithPath: #file).path))
         default:
             XCTFail()
         }
@@ -159,6 +161,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
             XCTAssertTrue(reason.contains(aggregatedParentClass.value.name))
             XCTAssertTrue(reason.contains("(gM1() -> GM1)"))
             XCTAssertTrue(reason.contains("(gM2(_: GMP1, arg2: GMP2) -> GM2)"))
+            XCTAssertTrue(reason.contains(URL(fileURLWithPath: #file).path))
         default:
             XCTFail()
         }
@@ -181,6 +184,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         case .failureWithReason(let reason):
             XCTAssertTrue(reason.contains(aggregatedChildClass.value.name))
             XCTAssertTrue(reason.contains("(cM(arg: CMP) -> CM)"))
+            XCTAssertTrue(reason.contains(URL(fileURLWithPath: #file).path))
         default:
             XCTFail()
         }
