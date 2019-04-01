@@ -46,8 +46,8 @@ class ConcreteSubclassDefinitionsAggregatorTests: BaseFrameworkTests {
         let childLeafMethods = [MethodDefinition(name: "cLM", returnType: "CLM", parameterTypes: [], isAbstract: false)]
 
         let leafConcreteSubclassDefinitions = [
-            ConcreteSubclassDefinition(name: "ParentLeaf", vars: parentLeafVars, methods: parentLeafMethods, inheritedTypes: ["GrandParent", "Parent"]),
-            ConcreteSubclassDefinition(name: "ChildLeaf", vars: childLeafVars, methods: childLeafMethods, inheritedTypes: ["GrandParent", "Parent", "Child"])
+            ConcreteSubclassDefinition(name: "ParentLeaf", vars: parentLeafVars, methods: parentLeafMethods, inheritedTypes: ["GrandParent", "Parent"], filePath: URL(fileURLWithPath: #file).path),
+            ConcreteSubclassDefinition(name: "ChildLeaf", vars: childLeafVars, methods: childLeafMethods, inheritedTypes: ["GrandParent", "Parent", "Child"], filePath: URL(fileURLWithPath: #file).path)
         ]
 
         let aggregator = ConcreteSubclassDefinitionsAggregator()

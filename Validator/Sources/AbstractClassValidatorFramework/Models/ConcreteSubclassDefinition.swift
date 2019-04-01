@@ -27,6 +27,8 @@ struct ConcreteSubclassDefinition: Hashable {
     let methods: [MethodDefinition]
     /// The names of inherited types.
     let inheritedTypes: [String]
+    /// The file path where this definition is.
+    let filePath: String
 }
 
 /// A data model representing the definition of a concrete subclass of an
