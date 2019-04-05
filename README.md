@@ -133,5 +133,12 @@ If multiple sources list files are given to the `validate` command, they all hav
 
 `--concurrency-limit`: The maximum number of tasks to execute concurrently. This defaults to the maximum concurrency allowed by the hardware.
 
+## Related projects
+
+If you like Needle, check out other related open source projects from our team:
+- [Needle](https://github.com/uber/needle): a compile-time safe Swift dependency injection framework.
+- [Swift Concurrency](https://github.com/uber/swift-concurrency): a set of concurrency utility classes used by Uber, inspired by the equivalent [java.util.concurrent](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html) package classes.
+- [Swift Common](https://github.com/uber/swift-common): common libraries used by this set of Swift open source projects.
+
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuber%2Fswift-concurrency.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuber%2Fswift-concurrency?ref=badge_large)
