@@ -64,79 +64,34 @@ class ConcreteSubclassValidationTask: AbstractTask<ValidationResult> {
     private let aggregatedConcreteSubclassDefinition: AggregatedConcreteSubclassDefinition
 
     private func validateVars(of concreteDefinition: AggregatedConcreteSubclassDefinition) -> ValidationResult {
-        let abstractVarSignatures = Set(concreteDefinition.aggregatedVars.filter { $0.isAbstract }.map { VarSignature(definition: $0) })
-        let concreteVarSignatures = Set(concreteDefinition.aggregatedVars.filter { !$0.isAbstract }.map { VarSignature(definition: $0) })
+        // Cannot validate based on return type of the properties, since
+        // the return types may be generic types. Using name and override
+        // attribute is sufficient.
+        let abstractVarNames = Set(concreteDefinition.aggregatedVars.filter { $0.isAbstract }.map { $0.name })
+        let concreteOverrideVarNames = Set(concreteDefinition.aggregatedVars.filter { !$0.isAbstract && $0.isOverride }.map { $0.name })
 
-        let nonImplementedVars = abstractVarSignatures.subtracting(concreteVarSignatures)
-        if !nonImplementedVars.isEmpty {
-            let varSignatures = nonImplementedVars.map { "(\($0.name): \($0.returnType))" }.joined(separator: ", ")
-            return .failureWithReason("Class \(concreteDefinition.value.name) is missing abstract property implementations of \(varSignatures) in \(concreteDefinition.value.filePath)")
+        let nonImplementedVarNames = abstractVarNames.subtracting(concreteOverrideVarNames)
+        if !nonImplementedVarNames.isEmpty {
+            let varNames = nonImplementedVarNames.joined(separator: ", ")
+            return .failureWithReason("Class \(concreteDefinition.value.name) is missing abstract property implementations of \(varNames) in \(concreteDefinition.value.filePath)")
         }
 
         return .success
     }
 
     private func validateMethods(of concreteDefinition: AggregatedConcreteSubclassDefinition) -> ValidationResult {
-        let abstractMethodSignatures = Set(concreteDefinition.aggregatedMethods.filter { $0.isAbstract }.map { MethodSignature(definition: $0) })
-        let concreteMethodSignatures = Set(concreteDefinition.aggregatedMethods.filter { !$0.isAbstract }.map { MethodSignature(definition: $0) })
+        // Cannot validate based on return type or parameter types, since
+        // the these types may be generic types. Using name and override
+        // attribute is sufficient.
+        let abstractMethodNames = Set(concreteDefinition.aggregatedMethods.filter { $0.isAbstract }.map { $0.name })
+        let concreteOverrideMethodNames = Set(concreteDefinition.aggregatedMethods.filter { !$0.isAbstract && $0.isOverride }.map { $0.name })
 
-        let nonImplementedMethods = abstractMethodSignatures.subtracting(concreteMethodSignatures)
-        guard !nonImplementedMethods.isEmpty else {
-            return .success
+        let nonImplementedMethodNames = abstractMethodNames.subtracting(concreteOverrideMethodNames)
+        if !nonImplementedMethodNames.isEmpty {
+            let methodNames = nonImplementedMethodNames.joined(separator: ", ")
+            return .failureWithReason("Class \(concreteDefinition.value.name) is missing abstract method implementations of \(methodNames) in \(concreteDefinition.value.filePath)")
         }
 
-        let methodSignatures = nonImplementedMethods
-            .map { (signature: MethodSignature) -> String in
-                let signatureComponents = signature.name.components(separatedBy: ":")
-                let signatureNameAndParams: String
-                if signatureComponents.count > 1 {
-                    var parameters = signature.parameterTypes
-                    var signatureWithParams = [String]()
-                    for component in signatureComponents {
-                        signatureWithParams.append(component)
-                        if !parameters.isEmpty {
-                            let parameter = parameters.removeFirst()
-                            signatureWithParams.append(": \(parameter)")
-                            if !parameters.isEmpty {
-                                signatureWithParams.append(", ")
-                            }
-                        }
-                    }
-                    signatureNameAndParams = "\(signatureWithParams.joined())"
-                } else {
-                    signatureNameAndParams = "\(signature.name)()"
-                }
-
-                if let returnType = signature.returnType {
-                    return "(\(signatureNameAndParams) -> \(returnType))"
-                } else {
-                    return "(\(signatureNameAndParams))"
-                }
-            }
-            .joined(separator: ", ")
-
-        return .failureWithReason("Class \(concreteDefinition.value.name) is missing abstract method implementations of \(methodSignatures) in \(concreteDefinition.value.filePath)")
-    }
-}
-
-fileprivate struct VarSignature: Hashable {
-    fileprivate let name: String
-    fileprivate let returnType: String
-
-    fileprivate init(definition: VarDefinition) {
-        name = definition.name
-        returnType = definition.returnType
-    }
-}
-
-fileprivate struct MethodSignature: Hashable {
-    fileprivate let name: String
-    fileprivate let returnType: String?
-    fileprivate let parameterTypes: [String]
-
-    fileprivate init(definition: MethodDefinition) {
-        name = definition.name
-        returnType = definition.returnType
-        parameterTypes = definition.parameterTypes
+        return .success
     }
 }
