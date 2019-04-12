@@ -49,7 +49,7 @@ class DeclarationProducerTask: AbstractTask<[AbstractClassDefinition]> {
                     let methods = declaration.methods
                     let hasAbstractMethods = methods.contains { $0.isAbstract }
                     if hasAbstractVars || hasAbstractMethods {
-                        return AbstractClassDefinition(name: declaration.name, vars: vars, methods: methods, inheritedTypes: declaration.inheritedTypes)
+                        return AbstractClassDefinition(name: declaration.name, vars: vars, methods: methods, inheritedTypes: declaration.inheritedTypeNames)
                     }
                     return nil
                 }

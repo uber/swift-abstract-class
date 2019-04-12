@@ -3,17 +3,17 @@ class ConcreteClass1: ParentAbstractClass, AProtocol {
         return SomeAbstractC(blah: Blah(), kaa: BB())
     }
 
-    var grandParentVar: GrandParentVar {
+    override var grandParentVar: GrandParentVar {
         return GrandParentVar(child: self)
     }
 
-    func parentMethod(index: Int) -> String {
+    override func parentMethod(index: Int) -> String {
         return "concrete"
     }
 }
 
 class ConcreteClass2: GrandParentAbstractClass {
-    var grandParentVar: GrandParentVar {
+    override var grandParentVar: GrandParentVar {
         return GrandParentVar(child: self)
     }
 }

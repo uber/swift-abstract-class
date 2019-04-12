@@ -20,14 +20,14 @@ import XCTest
 class AbstractClassDefinitionsAggregatorTests: BaseFrameworkTests {
 
     func test_aggregate_withAncestors_verifyAggregatedResults() {
-        let grandParentVars = [VarDefinition(name: "gV", returnType: "GV", isAbstract: true)]
-        let grandParentMethods = [MethodDefinition(name: "gM1", returnType: "GM1", parameterTypes: [], isAbstract: true), MethodDefinition(name: "gM2", returnType: "GM2", parameterTypes: ["GMP1", "GMP2"], isAbstract: true)]
+        let grandParentVars = [VarDefinition(name: "gV", returnType: "GV", isAbstract: true, isOverride: false)]
+        let grandParentMethods = [MethodDefinition(name: "gM1", returnType: "GM1", parameterTypes: [], isAbstract: true, isOverride: false), MethodDefinition(name: "gM2", returnType: "GM2", parameterTypes: ["GMP1", "GMP2"], isAbstract: true, isOverride: false)]
 
-        let parentVars = [VarDefinition(name: "pV1", returnType: "PV1", isAbstract: true), VarDefinition(name: "pV2", returnType: "PV2", isAbstract: true)]
-        let parentMethods = [MethodDefinition(name: "gM", returnType: "GM", parameterTypes: [], isAbstract: true)]
+        let parentVars = [VarDefinition(name: "pV1", returnType: "PV1", isAbstract: true, isOverride: false), VarDefinition(name: "pV2", returnType: "PV2", isAbstract: true, isOverride: false)]
+        let parentMethods = [MethodDefinition(name: "gM", returnType: "GM", parameterTypes: [], isAbstract: true, isOverride: false)]
 
-        let childVars = [VarDefinition(name: "cV", returnType: "CV", isAbstract: true)]
-        let childMethods = [MethodDefinition(name: "cM", returnType: "CM", parameterTypes: ["CMP"], isAbstract: true)]
+        let childVars = [VarDefinition(name: "cV", returnType: "CV", isAbstract: true, isOverride: false)]
+        let childMethods = [MethodDefinition(name: "cM", returnType: "CM", parameterTypes: ["CMP"], isAbstract: true, isOverride: false)]
 
         let definitions = [
             AbstractClassDefinition(name: "GrandParent", vars: grandParentVars, methods: grandParentMethods, inheritedTypes: []),
