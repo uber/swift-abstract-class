@@ -5,7 +5,7 @@ class AnOutterClass {
 
     func someMethod(index: Int) -> String {
         class ConcreteClass2: GrandParentAbstractClass {
-            var grandParentVar: GrandParentVar {
+            override var grandParentVar: GrandParentVar {
                 return GrandParentVar(child: self)
             }
         }

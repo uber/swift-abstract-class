@@ -58,7 +58,7 @@ class ConcreteSubclassProducerTask: AbstractTask<[ConcreteSubclassDefinition]> {
                 .compactMap { (classStructure: Structure) -> ConcreteSubclassDefinition? in
                     // If the class inherits from an abstract class, make
                     // sure it is a concrete class.
-                    let inheritedTypes = classStructure.inheritedTypes
+                    let inheritedTypes = classStructure.inheritedTypeNames
                     if inheritedTypes.isAnyElement(in: abstractClassNames) {
                         let hasAbstractVars = classStructure.computedVars.contains { $0.isAbstract }
                         guard !hasAbstractVars else {
@@ -89,14 +89,14 @@ private extension Structure {
     var varDefinitions: [VarDefinition] {
         return filterSubstructure(by: SwiftDeclarationKind.varInstance.rawValue, recursively: false)
             .map { (varStructure) -> VarDefinition in
-                VarDefinition(name: varStructure.name, returnType: varStructure.returnType!, isAbstract: false)
+                VarDefinition(name: varStructure.name, returnType: varStructure.returnType!, isAbstract: false, isOverride: varStructure.isOverride)
             }
     }
 
     var methodDefinitions: [MethodDefinition] {
         return filterSubstructure(by: SwiftDeclarationKind.functionMethodInstance.rawValue, recursively: false)
             .map { (methodStructure) -> MethodDefinition in
-                MethodDefinition(name: methodStructure.name, returnType: methodStructure.returnType, parameterTypes: methodStructure.parameterTypes, isAbstract: false)
+                MethodDefinition(name: methodStructure.name, returnType: methodStructure.returnType, parameterTypes: methodStructure.parameterTypes, isAbstract: false, isOverride: methodStructure.isOverride)
             }
     }
 }

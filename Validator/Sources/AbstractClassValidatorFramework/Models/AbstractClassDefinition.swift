@@ -41,6 +41,8 @@ struct MethodDefinition: Hashable {
     let parameterTypes: [String]
     /// Indicates if this method is an abstract method.
     let isAbstract: Bool
+    /// Indicates if this property has the override attribute.
+    let isOverride: Bool
     // Parameter names do not need to be stored here, since the method
     // name encapsulates that already. The parameter label names do
     // no contribute to the uniqueness of methods.
@@ -55,6 +57,8 @@ struct VarDefinition: Hashable {
     let returnType: String
     /// Indicates if this property is an abstract method.
     let isAbstract: Bool
+    /// Indicates if this property has the override attribute.
+    let isOverride: Bool
 }
 
 /// A data model representing the definition of an abstract class that

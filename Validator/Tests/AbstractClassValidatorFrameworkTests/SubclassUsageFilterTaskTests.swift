@@ -17,20 +17,11 @@
 import XCTest
 @testable import AbstractClassValidatorFramework
 
-class ExpressionCallUsageFilterTaskTests: BaseFrameworkTests {
-
-    private var abstractClassDefinition: AbstractClassDefinition!
-
-    override func setUp() {
-        super.setUp()
-
-        let abstractVarDefinition = VarDefinition(name: "abVar", returnType: "Var", isAbstract: true, isOverride: false)
-        abstractClassDefinition = AbstractClassDefinition(name: "SomeAbstractC", vars: [abstractVarDefinition], methods: [], inheritedTypes: [])
-    }
+class SubclassUsageFilterTaskTests: BaseFrameworkTests {
 
     func test_execute_noExclusion_noAbstractClass_verifyResult() {
         let url = fixtureUrl(for: "NoAbstractClass.swift")
-        let task = ExpressionCallUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [])
+        let task = SubclassUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [])
 
         let result = try! task.execute()
 
@@ -43,8 +34,8 @@ class ExpressionCallUsageFilterTaskTests: BaseFrameworkTests {
     }
 
     func test_execute_suffixExclusion_hasAbstractClass_verifyResult() {
-        let url = fixtureUrl(for: "ViolateInstantiation.swift")
-        let task = ExpressionCallUsageFilterTask(url: url, exclusionSuffixes: ["Instantiation"], exclusionPaths: [], abstractClassDefinitions: [abstractClassDefinition])
+        let url = fixtureUrl(for: "ConcreteSubclass.swift")
+        let task = SubclassUsageFilterTask(url: url, exclusionSuffixes: ["Subclass"], exclusionPaths: [], abstractClassDefinitions: [AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [], inheritedTypes: [])])
 
         let result = try! task.execute()
 
@@ -57,8 +48,8 @@ class ExpressionCallUsageFilterTaskTests: BaseFrameworkTests {
     }
 
     func test_execute_pathExclusion_hasAbstractClass_verifyResult() {
-        let url = fixtureUrl(for: "ViolateInstantiation.swift")
-        let task = ExpressionCallUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: ["Fixtures/"], abstractClassDefinitions: [abstractClassDefinition])
+        let url = fixtureUrl(for: "ConcreteSubclass.swift")
+        let task = SubclassUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: ["Fixtures/"], abstractClassDefinitions: [AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [], inheritedTypes: [])])
 
         let result = try! task.execute()
 
@@ -70,9 +61,24 @@ class ExpressionCallUsageFilterTaskTests: BaseFrameworkTests {
         }
     }
 
-    func test_execute_noExclusion_hasAbstractSubclass_verifyResult() {
-        let url = fixtureUrl(for: "ViolateInstantiation.swift")
-        let task = ExpressionCallUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [abstractClassDefinition])
+    func test_execute_noExclusion_simpleSubclass_verifyResult() {
+        let url = fixtureUrl(for: "ConcreteSubclass.swift")
+        let task = SubclassUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [], inheritedTypes: [])])
+
+        let result = try! task.execute()
+
+        switch result {
+        case .shouldProcess(let processUrl, let content):
+            XCTAssertEqual(processUrl, url)
+            XCTAssertEqual(content, try! String(contentsOf: url))
+        case .skip:
+            XCTFail()
+        }
+    }
+
+    func test_execute_noExclusion_genericSubclass_verifyResult() {
+        let url = fixtureUrl(for: "GenericSuperConcreteSubclass.swift")
+        let task = SubclassUsageFilterTask(url: url, exclusionSuffixes: [], exclusionPaths: [], abstractClassDefinitions: [AbstractClassDefinition(name: "GenericBaseClass", vars: [], methods: [], inheritedTypes: [])])
 
         let result = try! task.execute()
 

@@ -49,7 +49,7 @@ extension Structure {
                 }
 
                 // Properties must have return types.
-                definitions.append(VarDefinition(name: sub.name, returnType: returnType, isAbstract: isAbstract))
+                definitions.append(VarDefinition(name: sub.name, returnType: returnType, isAbstract: isAbstract, isOverride: sub.isOverride))
             }
         }
 
@@ -67,7 +67,7 @@ extension Structure {
                 let isAbstract = methodStructure.substructures.contains { (substructure: Structure) -> Bool in
                     return substructure.isExpressionCall && substructure.name == abstractMethodType
                 }
-                return MethodDefinition(name: methodStructure.name, returnType: methodStructure.returnType, parameterTypes: methodStructure.parameterTypes, isAbstract: isAbstract)
+                return MethodDefinition(name: methodStructure.name, returnType: methodStructure.returnType, parameterTypes: methodStructure.parameterTypes, isAbstract: isAbstract, isOverride: methodStructure.isOverride)
         }
     }
 
