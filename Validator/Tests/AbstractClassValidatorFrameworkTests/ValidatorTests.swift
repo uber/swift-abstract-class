@@ -61,7 +61,21 @@ class ValidatorTests: BaseFrameworkTests {
             XCTFail()
         } catch GenericError.withMessage(let message) {
             XCTAssertTrue(message.contains("ChildConcrete"))
-            XCTAssertTrue(message.contains("(cAbstractVar: CVar)"))
+            XCTAssertTrue(message.contains("cAbstractVar"))
+        } catch {
+            XCTFail()
+        }
+    }
+
+    func test_validate_noExclusions_withGenericSuperclassImplementationViolations_verifyError() {
+        let sourceRoot = fixtureUrl(for: "/Integration/Invalid/GenericSuperclass/")
+
+        do {
+            try Validator().validate(from: [sourceRoot.path], excludingFilesEndingWith: [], excludingFilesWithPaths: [], shouldCollectParsingInfo: false, timeout: 10, concurrencyLimit: nil)
+            XCTFail()
+        } catch GenericError.withMessage(let message) {
+            XCTAssertTrue(message.contains("ChildConcrete"))
+            XCTAssertTrue(message.contains("cAbstractVar"))
         } catch {
             XCTFail()
         }

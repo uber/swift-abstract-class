@@ -114,8 +114,8 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         switch result {
         case .failureWithReason(let reason):
             XCTAssertTrue(reason.contains(aggregatedParentClass.value.name))
-            XCTAssertTrue(reason.contains("(pV2: PV2)"))
-            XCTAssertTrue(reason.contains("(pV1: PV1)"))
+            XCTAssertTrue(reason.contains("pV2"))
+            XCTAssertTrue(reason.contains("pV1"))
             XCTAssertTrue(reason.contains(URL(fileURLWithPath: #file).path))
         default:
             XCTFail()
@@ -138,7 +138,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         switch result {
         case .failureWithReason(let reason):
             XCTAssertTrue(reason.contains(aggregatedChildClass.value.name))
-            XCTAssertTrue(reason.contains("(cV: CV)"))
+            XCTAssertTrue(reason.contains("cV"))
             XCTAssertTrue(reason.contains(URL(fileURLWithPath: #file).path))
         default:
             XCTFail()
@@ -159,8 +159,8 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         switch result {
         case .failureWithReason(let reason):
             XCTAssertTrue(reason.contains(aggregatedParentClass.value.name))
-            XCTAssertTrue(reason.contains("(gM1() -> GM1)"))
-            XCTAssertTrue(reason.contains("(gM2(_: GMP1, arg2: GMP2) -> GM2)"))
+            XCTAssertTrue(reason.contains("gM1"))
+            XCTAssertTrue(reason.contains("gM2(_:arg2:)"))
             XCTAssertTrue(reason.contains(URL(fileURLWithPath: #file).path))
         default:
             XCTFail()
@@ -183,7 +183,7 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
         switch result {
         case .failureWithReason(let reason):
             XCTAssertTrue(reason.contains(aggregatedChildClass.value.name))
-            XCTAssertTrue(reason.contains("(cM(arg: CMP) -> CM)"))
+            XCTAssertTrue(reason.contains("cM(arg:)"))
             XCTAssertTrue(reason.contains(URL(fileURLWithPath: #file).path))
         default:
             XCTFail()
