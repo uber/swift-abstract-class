@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'AbstractClassFoundation'
-  s.version          = '0.1.0'
+  s.version          = '0.2.0'
   s.summary          = 'Swift abstract class validator.'
   s.description      = 'Swift abstract class validator is an source code analysis tool that validates abstract class rules.'
 
