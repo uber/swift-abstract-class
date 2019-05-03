@@ -1,6 +1,10 @@
 language: objective-c
 osx_image: xcode10.1
+before_script:
+- "curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | sudo bash"
 matrix:
     include:
         - name: "AbstractClassFoundationTests"
           script: xcodebuild test -project AbstractClassFoundation.xcodeproj -scheme AbstractClassFoundationTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+script:
+- fossa
