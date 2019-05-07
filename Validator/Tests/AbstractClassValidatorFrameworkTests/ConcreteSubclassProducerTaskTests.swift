@@ -22,7 +22,7 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
     func test_execute_hasAbstractSubclass_verifyNoDefinitions() {
         let url = fixtureUrl(for: "MiddleAbstractClass.swift")
         let content = try! String(contentsOf: url)
-        let abstractClassDefinitions = [AbstractClassDefinition(name: "GrandParentAbstractClass", vars: [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: true, isOverride: false)], methods: [], inheritedTypes: ["AbstractClass"])]
+        let abstractClassDefinitions = [AbstractClassDefinition(name: "GrandParentAbstractClass", vars: [VarDefinition(name: "grandParentVar", isAbstract: true, isOverride: false)], methods: [], inheritedTypes: ["AbstractClass"])]
 
         let task = ConcreteSubclassProducerTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: abstractClassDefinitions)
 
@@ -35,8 +35,8 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
         let url = fixtureUrl(for: "ConcreteSubclass.swift")
         let content = try! String(contentsOf: url)
         let abstractClassDefinitions = [
-            AbstractClassDefinition(name: "GrandParentAbstractClass", vars: [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: true, isOverride: false)], methods: [], inheritedTypes: ["AbstractClass"]),
-            AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [MethodDefinition(name: "parentMethod(index:)", returnType: "String", parameterTypes: ["Int"], isAbstract: true, isOverride: false)], inheritedTypes: ["GrandParentAbstractClass"])
+            AbstractClassDefinition(name: "GrandParentAbstractClass", vars: [VarDefinition(name: "grandParentVar", isAbstract: true, isOverride: false)], methods: [], inheritedTypes: ["AbstractClass"]),
+            AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [MethodDefinition(name: "parentMethod(index:)", isAbstract: true, isOverride: false)], inheritedTypes: ["GrandParentAbstractClass"])
         ]
 
         let task = ConcreteSubclassProducerTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: abstractClassDefinitions)
@@ -46,13 +46,13 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
         XCTAssertEqual(concreteDefinitions.count, 2)
 
         XCTAssertEqual(concreteDefinitions[0].name, "ConcreteClass1")
-        XCTAssertEqual(concreteDefinitions[0].vars, [VarDefinition(name: "someProperty", returnType: "SomeAbstractC", isAbstract: false, isOverride: false),
-                                                           VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: false, isOverride: true)])
-        XCTAssertEqual(concreteDefinitions[0].methods, [MethodDefinition(name: "parentMethod(index:)", returnType: "String", parameterTypes: ["Int"], isAbstract: false, isOverride: true)])
+        XCTAssertEqual(concreteDefinitions[0].vars, [VarDefinition(name: "someProperty", isAbstract: false, isOverride: false),
+                                                           VarDefinition(name: "grandParentVar", isAbstract: false, isOverride: true)])
+        XCTAssertEqual(concreteDefinitions[0].methods, [MethodDefinition(name: "parentMethod(index:)", isAbstract: false, isOverride: true)])
         XCTAssertEqual(concreteDefinitions[0].inheritedTypes, ["ParentAbstractClass", "AProtocol"])
 
         XCTAssertEqual(concreteDefinitions[1].name, "ConcreteClass2")
-        XCTAssertEqual(concreteDefinitions[1].vars, [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: false, isOverride: true)])
+        XCTAssertEqual(concreteDefinitions[1].vars, [VarDefinition(name: "grandParentVar", isAbstract: false, isOverride: true)])
         XCTAssertEqual(concreteDefinitions[1].inheritedTypes, ["GrandParentAbstractClass"])
     }
 
@@ -60,8 +60,8 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
         let url = fixtureUrl(for: "InnerConcreteSubclass.swift")
         let content = try! String(contentsOf: url)
         let abstractClassDefinitions = [
-            AbstractClassDefinition(name: "GrandParentAbstractClass", vars: [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: true, isOverride: false)], methods: [], inheritedTypes: ["AbstractClass"]),
-            AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [MethodDefinition(name: "parentMethod(index:)", returnType: "String", parameterTypes: ["Int"], isAbstract: true, isOverride: false)], inheritedTypes: ["GrandParentAbstractClass"])
+            AbstractClassDefinition(name: "GrandParentAbstractClass", vars: [VarDefinition(name: "grandParentVar", isAbstract: true, isOverride: false)], methods: [], inheritedTypes: ["AbstractClass"]),
+            AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [MethodDefinition(name: "parentMethod(index:)", isAbstract: true, isOverride: false)], inheritedTypes: ["GrandParentAbstractClass"])
         ]
 
         let task = ConcreteSubclassProducerTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: abstractClassDefinitions)
@@ -71,7 +71,7 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
         XCTAssertEqual(concreteDefinitions.count, 1)
 
         XCTAssertEqual(concreteDefinitions[0].name, "ConcreteClass2")
-        XCTAssertEqual(concreteDefinitions[0].vars, [VarDefinition(name: "grandParentVar", returnType: "GrandParentVar", isAbstract: false, isOverride: true)])
+        XCTAssertEqual(concreteDefinitions[0].vars, [VarDefinition(name: "grandParentVar", isAbstract: false, isOverride: true)])
         XCTAssertEqual(concreteDefinitions[0].inheritedTypes, ["GrandParentAbstractClass"])
     }
 
@@ -79,8 +79,8 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
         let url = fixtureUrl(for: "GenericSuperConcreteSubclass.swift")
         let content = try! String(contentsOf: url)
         let abstractClassDefinitions = [
-            AbstractClassDefinition(name: "GenericBaseClass", vars: [VarDefinition(name: "genericTypeVar", returnType: "GrandParentVar", isAbstract: true, isOverride: false)], methods: [], inheritedTypes: ["AbstractClass"]),
-            AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [MethodDefinition(name: "parentMethod(index:)", returnType: "String", parameterTypes: ["Int"], isAbstract: true, isOverride: false)], inheritedTypes: ["GrandParentAbstractClass"])
+            AbstractClassDefinition(name: "GenericBaseClass", vars: [VarDefinition(name: "genericTypeVar", isAbstract: true, isOverride: false)], methods: [], inheritedTypes: ["AbstractClass"]),
+            AbstractClassDefinition(name: "ParentAbstractClass", vars: [], methods: [MethodDefinition(name: "parentMethod(index:)", isAbstract: true, isOverride: false)], inheritedTypes: ["GrandParentAbstractClass"])
         ]
 
         let task = ConcreteSubclassProducerTask(sourceUrl: url, sourceContent: content, abstractClassDefinitions: abstractClassDefinitions)
@@ -91,10 +91,9 @@ class ConcreteSubclassProducerTaskTests: BaseFrameworkTests {
 
         XCTAssertEqual(concreteDefinitions[0].name, "ConcreteClassGenericType")
         XCTAssertEqual(concreteDefinitions[0].vars.count, 1)
-        XCTAssertEqual(concreteDefinitions[0].vars, [VarDefinition(name: "genericTypeVar", returnType: "String", isAbstract: false, isOverride: true)])
+        XCTAssertEqual(concreteDefinitions[0].vars, [VarDefinition(name: "genericTypeVar", isAbstract: false, isOverride: true)])
         XCTAssertEqual(concreteDefinitions[0].methods.count, 1)
         XCTAssertEqual(concreteDefinitions[0].methods[0].name, "returnGenericType()")
-        XCTAssertEqual(concreteDefinitions[0].methods[0].returnType, "String")
-        XCTAssertEqual(concreteDefinitions[0].inheritedTypes, ["AProtocol", "GenericBaseClass"])
+        XCTAssertEqual(concreteDefinitions[0].inheritedTypes, ["GenericBaseClass", "AProtocol"])
     }
 }

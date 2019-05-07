@@ -50,30 +50,30 @@ class ConcreteSubclassValidationTaskTests: BaseFrameworkTests {
     override func setUp() {
         super.setUp()
 
-        grandParentAbstractVars = [VarDefinition(name: "gV", returnType: "GV", isAbstract: true, isOverride: false)]
-        grandParentConcreteVars = [VarDefinition(name: "gV", returnType: "GV", isAbstract: false, isOverride: true)]
+        grandParentAbstractVars = [VarDefinition(name: "gV", isAbstract: true, isOverride: false)]
+        grandParentConcreteVars = [VarDefinition(name: "gV", isAbstract: false, isOverride: true)]
 
-        grandParentAbstractMethods = [MethodDefinition(name: "gM1", returnType: "GM1", parameterTypes: [], isAbstract: true, isOverride: false), MethodDefinition(name: "gM2(_:arg2:)", returnType: "GM2", parameterTypes: ["GMP1", "GMP2"], isAbstract: true, isOverride: false)]
-        grandParentConcreteMethods = [MethodDefinition(name: "gM1", returnType: "GM1", parameterTypes: [], isAbstract: false, isOverride: true), MethodDefinition(name: "gM2(_:arg2:)", returnType: "GM2", parameterTypes: ["GMP1", "GMP2"], isAbstract: false, isOverride: true)]
+        grandParentAbstractMethods = [MethodDefinition(name: "gM1", isAbstract: true, isOverride: false), MethodDefinition(name: "gM2(_:arg2:)", isAbstract: true, isOverride: false)]
+        grandParentConcreteMethods = [MethodDefinition(name: "gM1", isAbstract: false, isOverride: true), MethodDefinition(name: "gM2(_:arg2:)", isAbstract: false, isOverride: true)]
 
-        parentAbstractVars = [VarDefinition(name: "pV1", returnType: "PV1", isAbstract: true, isOverride: false), VarDefinition(name: "pV2", returnType: "PV2", isAbstract: true, isOverride: false)]
-        parentConcreteVars = [VarDefinition(name: "pV1", returnType: "PV1", isAbstract: false, isOverride: true), VarDefinition(name: "pV2", returnType: "PV2", isAbstract: false, isOverride: true)]
+        parentAbstractVars = [VarDefinition(name: "pV1", isAbstract: true, isOverride: false), VarDefinition(name: "pV2", isAbstract: true, isOverride: false)]
+        parentConcreteVars = [VarDefinition(name: "pV1", isAbstract: false, isOverride: true), VarDefinition(name: "pV2", isAbstract: false, isOverride: true)]
 
-        parentAbstractMethods = [MethodDefinition(name: "gM", returnType: "GM", parameterTypes: [], isAbstract: true, isOverride: false)]
-        parentConcreteMethods = [MethodDefinition(name: "gM", returnType: "GM", parameterTypes: [], isAbstract: false, isOverride: true)]
+        parentAbstractMethods = [MethodDefinition(name: "gM", isAbstract: true, isOverride: false)]
+        parentConcreteMethods = [MethodDefinition(name: "gM", isAbstract: false, isOverride: true)]
 
-        childAbstractVars = [VarDefinition(name: "cV", returnType: "CV", isAbstract: true, isOverride: false)]
-        childConcreteVars = [VarDefinition(name: "cV", returnType: "CV", isAbstract: false, isOverride: true)]
+        childAbstractVars = [VarDefinition(name: "cV", isAbstract: true, isOverride: false)]
+        childConcreteVars = [VarDefinition(name: "cV", isAbstract: false, isOverride: true)]
 
-        childAbstractMethods = [MethodDefinition(name: "cM(arg:)", returnType: "CM", parameterTypes: ["CMP"], isAbstract: true, isOverride: false)]
-        childConcreteMethods = [MethodDefinition(name: "cM(arg:)", returnType: "CM", parameterTypes: ["CMP"], isAbstract: false, isOverride: true)]
+        childAbstractMethods = [MethodDefinition(name: "cM(arg:)", isAbstract: true, isOverride: false)]
+        childConcreteMethods = [MethodDefinition(name: "cM(arg:)", isAbstract: false, isOverride: true)]
 
-        parentAdditionalConcreteVars = [VarDefinition(name: "pLV", returnType: "PLV", isAbstract: false, isOverride: true)]
-        parentAdditionalConcreteMethods = [MethodDefinition(name: "pLM", returnType: "PLM", parameterTypes: [], isAbstract: false, isOverride: true)]
+        parentAdditionalConcreteVars = [VarDefinition(name: "pLV", isAbstract: false, isOverride: true)]
+        parentAdditionalConcreteMethods = [MethodDefinition(name: "pLM", isAbstract: false, isOverride: true)]
 
-        childAdditionalConcreteVars = [VarDefinition(name: "cLV1", returnType: "CLV1", isAbstract: false, isOverride: true),
-                             VarDefinition(name: "cLV2", returnType: "CLV2", isAbstract: false, isOverride: true)]
-        childAdditionalConcreteMethods = [MethodDefinition(name: "cLM", returnType: "CLM", parameterTypes: [], isAbstract: false, isOverride: true)]
+        childAdditionalConcreteVars = [VarDefinition(name: "cLV1", isAbstract: false, isOverride: true),
+                             VarDefinition(name: "cLV2", isAbstract: false, isOverride: true)]
+        childAdditionalConcreteMethods = [MethodDefinition(name: "cLM", isAbstract: false, isOverride: true)]
 
         parentConcreteClass = ConcreteSubclassDefinition(name: "ParentLeaf", vars: parentAdditionalConcreteVars, methods: parentAdditionalConcreteMethods, inheritedTypes: ["GrandParent", "Parent"], filePath: URL(fileURLWithPath: #file).path)
         childConcreteClass = ConcreteSubclassDefinition(name: "ChildLeaf", vars: childAdditionalConcreteVars, methods: childAdditionalConcreteMethods, inheritedTypes: ["GrandParent", "Parent", "Child"], filePath: URL(fileURLWithPath: #file).path)

@@ -26,7 +26,7 @@ class ExpressionCallValidationTaskTests: BaseFrameworkTests {
     override func setUp() {
         super.setUp()
 
-        let abstractVarDefinition = VarDefinition(name: "abVar", returnType: "Var", isAbstract: true, isOverride: false)
+        let abstractVarDefinition = VarDefinition(name: "abVar", isAbstract: true, isOverride: false)
         abstractClassDefinition = AbstractClassDefinition(name: "SomeAbstractC", vars: [abstractVarDefinition], methods: [], inheritedTypes: [])
     }
 
