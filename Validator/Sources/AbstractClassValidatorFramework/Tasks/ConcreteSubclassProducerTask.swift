@@ -89,14 +89,14 @@ private extension Structure {
     var varDefinitions: [VarDefinition] {
         return filterSubstructure(by: SwiftDeclarationKind.varInstance.rawValue, recursively: false)
             .map { (varStructure) -> VarDefinition in
-                VarDefinition(name: varStructure.name, returnType: varStructure.returnType!, isAbstract: false, isOverride: varStructure.isOverride)
+                VarDefinition(name: varStructure.name, isAbstract: false, isOverride: varStructure.isOverride)
             }
     }
 
     var methodDefinitions: [MethodDefinition] {
         return filterSubstructure(by: SwiftDeclarationKind.functionMethodInstance.rawValue, recursively: false)
             .map { (methodStructure) -> MethodDefinition in
-                MethodDefinition(name: methodStructure.name, returnType: methodStructure.returnType, parameterTypes: methodStructure.parameterTypes, isAbstract: false, isOverride: methodStructure.isOverride)
+                MethodDefinition(name: methodStructure.name, isAbstract: false, isOverride: methodStructure.isOverride)
             }
     }
 }

@@ -36,7 +36,7 @@ class SubclassUsageFilterTask: BaseRegexUsageFilterTask {
     /// abstract classes.
     init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String], abstractClassDefinitions: [AbstractClassDefinition]) {
         super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, abstractClassDefinitions: abstractClassDefinitions, taskId: .subclassUsageFilterTask) { (abstractClassDefinition: AbstractClassDefinition) in
-            "(:( |.)*\(abstractClassDefinition.name) *(\\(|\\{|\\<|,))"
+            "(: *\(abstractClassDefinition.name) *(\\(|\\{|\\<|,))"
             // Cannot filter out files that also contain known abstract
             // classes, since a file might contain an abstract class and
             // a concrete implementation of an abstract class.

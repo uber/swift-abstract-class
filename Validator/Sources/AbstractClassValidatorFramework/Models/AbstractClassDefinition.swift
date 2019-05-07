@@ -35,10 +35,6 @@ struct AbstractClassDefinition: Hashable {
 struct MethodDefinition: Hashable {
     /// The name of the method.
     let name: String
-    /// The return type of the method.
-    let returnType: String?
-    /// The parameter types of the method.
-    let parameterTypes: [String]
     /// Indicates if this method is an abstract method.
     let isAbstract: Bool
     /// Indicates if this property has the override attribute.
@@ -53,8 +49,6 @@ struct MethodDefinition: Hashable {
 struct VarDefinition: Hashable {
     /// The name of the property.
     let name: String
-    /// The return type of the property.
-    let returnType: String
     /// Indicates if this property is an abstract method.
     let isAbstract: Bool
     /// Indicates if this property has the override attribute.
