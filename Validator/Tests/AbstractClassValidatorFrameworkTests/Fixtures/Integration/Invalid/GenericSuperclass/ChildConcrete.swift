@@ -1,4 +1,4 @@
-class ChildConcrete: BlahProtocol, ChildAbstract<String, Int> {
+class ChildConcrete: ChildAbstract<String, Int>, BlahProtocol {
 
     override var gpAbstractVar: GPVar {
         return GPVar()

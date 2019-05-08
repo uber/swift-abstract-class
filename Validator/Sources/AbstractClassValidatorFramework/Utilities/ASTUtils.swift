@@ -35,7 +35,7 @@ extension Structure {
             // the substructure does not have a return type, then it's not
             // a computed property. Therefore it cannot be abstract or an
             // override of an abstract property. So we do not have to parse.
-            if let subType = sub.type, subType == .varInstance, let returnType = sub.returnType {
+            if let subType = sub.type, subType == .varInstance {
                 // If next substructure is an expression call to `abstractMethod`,
                 // then the current substructure is an abstract var.
                 let isAbstract: Bool
@@ -49,7 +49,7 @@ extension Structure {
                 }
 
                 // Properties must have return types.
-                definitions.append(VarDefinition(name: sub.name, returnType: returnType, isAbstract: isAbstract, isOverride: sub.isOverride))
+                definitions.append(VarDefinition(name: sub.name, isAbstract: isAbstract, isOverride: sub.isOverride))
             }
         }
 
@@ -67,17 +67,7 @@ extension Structure {
                 let isAbstract = methodStructure.substructures.contains { (substructure: Structure) -> Bool in
                     return substructure.isExpressionCall && substructure.name == abstractMethodType
                 }
-                return MethodDefinition(name: methodStructure.name, returnType: methodStructure.returnType, parameterTypes: methodStructure.parameterTypes, isAbstract: isAbstract, isOverride: methodStructure.isOverride)
-        }
-    }
-
-    /// The parameter types of this method structure.
-    var parameterTypes: [String] {
-        return substructures.compactMap { (structure: Structure) -> String? in
-            if let type = structure.type, type == .varParameter {
-                return structure.returnType
-            }
-            return nil
+                return MethodDefinition(name: methodStructure.name, isAbstract: isAbstract, isOverride: methodStructure.isOverride)
         }
     }
 }

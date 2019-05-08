@@ -1,4 +1,4 @@
-class ConcreteClassGenericType: AProtocol, GenericBaseClass<String> {
+class ConcreteClassGenericType: GenericBaseClass<String>, AProtocol {
 
     override var genericTypeVar: String {
         return "var"
